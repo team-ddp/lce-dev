@@ -1,2 +1,2 @@
 # lcu-template
-vite + js
+vite + js + electron
