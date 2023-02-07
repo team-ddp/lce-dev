@@ -14,25 +14,33 @@ const {
 } = require("./consts.js");
 
 const time = 3000;
+let check = false;
 
 module.exports = class LCU {
   constructor(credentials) {
+    console.log("생성중...");
     this.lolClientConnection = new LeagueClient(credentials);
     this.lolClientCredentials = credentials;
-    console.log(credentials);
+    // console.log(credentials);
+    this.lolClientConnection.start();
+    check = true;
     this.lolClientConnection.on("connect", (newCredentilas) => {
       this.lolClientConnection = new LeagueClient(newCredentilas);
       this.lolClientConnection = newCredentilas;
-      this.setUser();
+      this.getUser();
       console.log("allow");
     });
 
+    console.log("클라 접속");
     this.lolClientConnection.on("disconnect", () => {
+      check = false;
       console.log("not sign");
       this.lolClientConnection.stop();
+      console.log(check);
     });
-    this.lolClientConnection.start();
-    this.setUser();
+    console.log(check);
+    // this.setUser();
+    // console.log("유저 기본정보");
   }
 
   async LCURequest(httpMethod, endPoint) {
@@ -58,8 +66,8 @@ module.exports = class LCU {
     }
   }
 
-  async setUser() {
-    console.log("setUser");
+  async getUser() {
+    console.log("getUser");
     return new Promise((resolve, reject) => {
       this.LCURequest("GET", LCU_USER_STATUS)
         .then((result) => {

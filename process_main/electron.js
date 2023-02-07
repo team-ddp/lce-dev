@@ -46,14 +46,15 @@ app.on("ready", async () => {
   ipcMain.on("fromTest", (data) => {
     // console.log(data);
     console.log(`1 Received [${data}] from renderer browser`);
-    mainWindow.webContents.send("test", " here is main!");
+    mainWindow.webContents.send("test", " here is main!ㅎㅇ");
   });
   createWindow();
   console.log("화면생성");
+
   const credentails = await authenticate.authenticate({
     awaitConnection: true,
   });
-  console.log("id값" + JSON.stringify(credentails));
+  // console.log("id값" + JSON.stringify(credentails));
   console.log("연결중..");
   await new LcuApi(credentails, mainWindow);
 });
