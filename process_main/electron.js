@@ -19,14 +19,13 @@ const createWindow = () => {
   console.log("asdf");
   win = new BrowserWindow({
     width: width * 0.5,
-    height: 720,
+    height: height * 0.5,
     title: "CGSP - powered py DDP",
     // titleBarStyle: "hidden",
-    resizable: false,
+    resizable: true,
     webPreferences: {
       // enableRemoteModule: true,
-      // nodeIntegration: true,
-      // nodeIntegrationInWorker: true,
+      nodeIntegration: false,
       contextIsolation: true,
       preload: preloadEntry,
     },

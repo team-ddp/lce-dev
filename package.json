@@ -4,17 +4,8 @@
   "version": "0.0.1",
   "main": "dist-electron/electron.js",
   "scripts": {
-    "__dev": "vite",
-    "test": "vite dev",
-    "vite:build": "cross-env REACT_APP_ENV=production vite build --out-dir build",
-    "electron:build": "electron-builder",
-    "build": "vite build && electron-builder",
-    "preview": "vite preview",
-    "__electron:start": "electron .",
-    "electron:start": "wait-on -v http://127.0.0.1:5173 && electron .",
-    "vite:start": "cross-env REACT_APP_ENV=development vite",
-    "start": "concurrently \"npm run vite:start\" \"npm run __electron:start\"",
-    "test:start": "cross-env REACT_APP_ENV=development vite dev --port 4173",
+    "dev": "cross-env REACT_APP_ENV=development vite dev --port 4173",
+    "build": "cross-env REACT_APP_ENV=production vite build && electron-builder",
     "deploy": "vite:build && electron-builder --publish=always"
   },
   "build": {
@@ -56,12 +47,10 @@
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react": "^3.1.0",
-    "concurrently": "^7.6.0",
     "electron": "^22.2.0",
     "electron-builder": "^23.6.0",
     "eslint": "^8.33.0",
     "vite": "^4.1.0",
-    "vite-plugin-electron": "^0.11.1",
-    "wait-on": "^7.0.1"
+    "vite-plugin-electron": "^0.11.1"
   }
 }
