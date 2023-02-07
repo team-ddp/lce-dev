@@ -8,7 +8,12 @@ export default defineConfig({
   plugins: [
     react(),
     electron({
-      entry: ["process_main/electron.js", "process_main/preload.js"],
+      entry: [
+        "process_main/electron.js",
+        "process_main/preload.js",
+        "consts/consts.js",
+        "process_main/apis/lcu.js",
+      ],
       onstart: (options) => {
         // Start Electron App
         options.startup([".", "--no-sandbox"]);

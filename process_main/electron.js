@@ -6,8 +6,13 @@ const {
   REACT_DEVELOPER_TOOLS,
 } = require("electron-devtools-installer");
 
+const authenticate = require("league-connect");
+const LcuApi = require("./lcu.js");
+
 console.log("init");
-let win;
+
+app.disableHardwareAcceleration();
+let mainWindow;
 
 const rendererEntry = path.join(__dirname, "../dist/index.html");
 const preloadEntry = path.join(__dirname, "/preload.js");
@@ -17,7 +22,7 @@ const createWindow = () => {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
   console.log("asdf");
-  win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: width * 0.5,
     height: height * 0.5,
     title: "CGSP - powered py DDP",
@@ -31,9 +36,9 @@ const createWindow = () => {
     },
   });
   process.env.REACT_APP_ENV === "development"
-    ? win.loadURL("http://localhost:4173")
-    : win.loadFile(rendererEntry);
-  win.webContents.openDevTools();
+    ? mainWindow.loadURL("http://localhost:4173")
+    : mainWindow.loadFile(rendererEntry);
+  mainWindow.webContents.openDevTools();
 };
 
 app.on("ready", async () => {
@@ -41,9 +46,16 @@ app.on("ready", async () => {
   ipcMain.on("fromTest", (data) => {
     // console.log(data);
     console.log(`1 Received [${data}] from renderer browser`);
-    win.webContents.send("test", " here is main!");
+    mainWindow.webContents.send("test", " here is main!");
   });
   createWindow();
+  console.log("화면생성");
+  const credentails = await authenticate.authenticate({
+    awaitConnection: true,
+  });
+  console.log("id값" + JSON.stringify(credentails));
+  console.log("연결중..");
+  await new LcuApi(credentails, mainWindow);
 });
 
 app.on("window-all-closed", () => {
