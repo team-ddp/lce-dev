@@ -14,6 +14,7 @@ release
 build
 dist-ssr
 *.local
+process_renderer/assets/ranked-emblem
 
 # Editor directories and files
 .vscode/*

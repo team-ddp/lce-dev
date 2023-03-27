@@ -9,10 +9,10 @@ export default defineConfig({
     react(),
     electron({
       entry: [
-        "process_main/electron.js",
-        "process_main/preload.js",
-        "consts/consts.js",
-        "process_main/apis/lcu.js",
+        "process_main/electron.ts",
+        "process_main/preload.ts",
+        "consts/consts.ts",
+        "process_main/apis/lcu.ts",
       ],
       onstart: (options) => {
         // Start Electron App
