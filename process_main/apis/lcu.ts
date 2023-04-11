@@ -104,6 +104,7 @@ export default class LCU {
   }
   async LCURequest(httpMethod: any, endPoint: any) {
     console.log("http1 요청");
+    console.log(endPoint);
     const creedntils = await authenticate();
     console.log("요청2");
     const result = await createHttp1Request(
@@ -145,7 +146,7 @@ export default class LCU {
   }
 
   async getMatchList() {
-    console.log("searchMatch");
+    console.log("getMatchList");
     return new Promise((resolve, reject) => {
       this.LCURequest("GET", LCU_RECENT_MATCHLIST)
         .then((result) => {
@@ -171,8 +172,9 @@ export default class LCU {
   async getMatchInfo(id: string) {
     console.log("getMatchInfo");
     const url = LCU_MATCH_INFO(id);
+    console.log(url);
     return new Promise((resolve, reject) => {
-      this.LCURequest("GET", LCU_MATCH_INFO(url))
+      this.LCURequest("GET", url)
         .then((result) => {
           // console.log(result);
           resolve(result);

@@ -76,11 +76,12 @@ const Sidenav = () => {
     window.api.invoke("fromTest", "eee");
     console.log("render to send");
   };
-  window.api.receive("setStatus", (e, ...data) => {
+  window.api.receive("test", (e, ...data) => {
     console.log(`Received from main process`);
-    window.api.removeAllListeners("test");
+    // window.api.removeAllListeners("test");
     // localStorage.setItem("data", JSON.stringify(data[0]));
-    // console.log(data);
+
+    console.log(data);
     // console.log("eee");
   });
   console.log(clientConnect);
@@ -110,6 +111,12 @@ const Sidenav = () => {
             사설 검색
           </Item>
         </Link>
+      </Items>
+      <Items onClick={count.toggle ? onClick : undefined}>
+        <Item>
+          <PersonSearchOutlinedIcon />
+          test
+        </Item>
       </Items>
       <Items onClick={count.toggle ? onClick : undefined}>
         <Item>

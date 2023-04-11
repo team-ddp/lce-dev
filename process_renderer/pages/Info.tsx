@@ -17,45 +17,55 @@ import { useRef } from "react";
 import { RANK_EMBLEM } from "../../consts/consts";
 
 import Icons from "../components/Icons";
+import Piechart from "../components/Chart";
+import Match from "../components/Match";
 
 const Container = styled.div`
   width: inherit;
-  height: inherit;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
 `;
 
 const Page = styled.div`
-  width: 95%;
-  height: 95%;
+  width: 100%;
+  height: inherit;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: yellow;
-  margin: 10px;
 `;
 const Wrap = styled.div`
   box-sizing: border-box;
-  background-color: green;
+  width: 100%;
+  height: inherit;
 `;
 const UserSection = styled.section`
   display: flex;
-  /* justify-content: center; */
   box-sizing: border-box;
-  background-color: green;
-  margin: 40px;
-  width: 900px;
-`;
-const RankSection = styled.section`
-  display: flex;
   justify-content: center;
+  align-items: center;
+  background-color: greenyellow;
+  width: 100%;
+  height: 250px;
+`;
+const MoreInfo = styled.section`
+  display: flex;
   box-sizing: border-box;
-  background-color: black;
-  margin: 40px;
+  background-color: orange;
+  margin-right: 30px;
+  width: 245px;
+  height: 371px;
+`;
+const MathList = styled.section`
+  display: flex;
+  box-sizing: border-box;
+  background-color: orange;
+  /* width: 100%; */
+  /* height: 100%; */
 `;
 const Text = styled.span`
   font-weight: 700;
@@ -90,6 +100,7 @@ const Info = () => {
           <UserSection>
             <Icons
               src={`https://ddragon.leagueoflegends.com/cdn/13.4.1/img/profileicon/${userInfo.profileIconId}.png`}
+              size="small"
             />
             <div
               style={{
@@ -102,9 +113,6 @@ const Info = () => {
               <Text>{userInfo.displayName}</Text>
               <Text>LV : {userInfo.summonerLevel}</Text>
             </div>
-          </UserSection>
-          <RankSection>
-            {/* <Icons src={RANK_EMBLEM(rankSolo.tier.toLowerCase())}></Icons> */}
             <Icons
               src={`process_renderer/assets/ranked-emblem/${rankSolo.tier}.webp`}
               size="medium"
@@ -115,18 +123,34 @@ const Info = () => {
                 flexDirection: "column",
                 justifyContent: "space-between",
                 padding: "15px",
+                marginRight: "10px",
               }}
             >
-              <Text>승 {rankSolo.wins}</Text>
-              <Text>패 {rankSolo.losses}</Text>
-              <Text>
+              <Text
+                style={{
+                  paddingBottom: "12px",
+                  fontSize: "18px",
+                  textAlign: "center",
+                }}
+              >
+                {rankSolo.wins + rankSolo.losses}전 {rankSolo.wins}승{" "}
+                {rankSolo.losses}패
+              </Text>
+              <Piechart win={rankSolo.wins} lose={rankSolo.losses} />
+              <Text
+                style={{
+                  paddingTop: "12px",
+                  fontSize: "18px",
+                  textAlign: "center",
+                }}
+              >
                 승률 {(rankSolo.wins / (rankSolo.wins + rankSolo.losses)) * 100}
                 %
               </Text>
             </div>
 
             <Icons
-              src={`process_renderer/assets/ranked-emblem/${rankFlex.tier}.webp`}
+              src={`process_renderer/assets/ranked-emblem/${rankFlex.tier}.png`}
               size="medium"
             />
             <div
@@ -137,9 +161,24 @@ const Info = () => {
                 padding: "15px",
               }}
             >
-              <Text>승 {rankFlex.wins}</Text>
-              <Text>패 {rankFlex.losses}</Text>
-              <Text>
+              <Text
+                style={{
+                  paddingBottom: "12px",
+                  fontSize: "18px",
+                  textAlign: "center",
+                }}
+              >
+                {rankFlex.wins + rankFlex.losses}전 {rankFlex.wins}승{" "}
+                {rankFlex.losses}패
+              </Text>
+              <Piechart win={rankFlex.wins} lose={rankFlex.losses} />
+              <Text
+                style={{
+                  paddingTop: "12px",
+                  fontSize: "18px",
+                  textAlign: "center",
+                }}
+              >
                 승률{" "}
                 {Math.floor(
                   (rankFlex.wins / (rankFlex.wins + rankFlex.losses)) * 100
@@ -147,31 +186,20 @@ const Info = () => {
                 %
               </Text>
             </div>
-          </RankSection>
-          {/* <img src="" /> */}
-          {/* <LoadingText>{user.userInfo.displayName}</LoadingText>
-          <LoadingText>{user.userInfo.summonerLevel}</LoadingText> */}
-          <RankSection></RankSection>
-          <Text>
-            솔랭: {rankSolo.tier} {rankSolo.division}
-          </Text>
-          <Text>
-            솔랭승률:{" "}
-            {Math.floor(
-              (rankSolo.wins / (rankSolo.wins + rankSolo.losses)) * 100
-            )}
-            %
-          </Text>
-          <Text>
-            자랭: {rankFlex.tier} {rankFlex.division}
-          </Text>
-          <Text>
-            자랭승률:{" "}
-            {Math.floor(
-              (rankFlex.wins / (rankFlex.wins + rankFlex.losses)) * 100
-            )}
-            %
-          </Text>
+          </UserSection>
+          <div
+            style={{
+              display: "flex",
+              marginTop: "39px",
+              marginLeft: " 35px",
+              marginRight: " 35px",
+            }}
+          >
+            <MoreInfo></MoreInfo>
+            <MathList>
+              <Match></Match>
+            </MathList>
+          </div>
         </Wrap>
       </Page>
     </Container>

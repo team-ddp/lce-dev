@@ -15,13 +15,17 @@ interface SizeProps {
 }
 
 const sizes: SizeProps = {
-  medium: {
+  small: {
     height: "100px",
     width: "100px",
   },
-  large: {
+  medium: {
     height: "200px",
     width: "200px",
+  },
+  large: {
+    height: "270px",
+    width: "270px",
   },
 };
 

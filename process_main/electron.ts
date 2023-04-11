@@ -15,6 +15,7 @@ import { authenticate, Credentials } from "league-connect";
 
 import LcuApi from "./apis/lcu";
 import { app, BrowserWindow, ipcMain } from "electron";
+import fs from "fs";
 
 console.log("init");
 
@@ -35,7 +36,7 @@ const createWindow = () => {
     height: 810,
     title: "CGSP - powered py DDP",
     titleBarStyle: "hidden",
-    resizable: true,
+    resizable: false,
     webPreferences: {
       // enableRemoteModule: true,
       nodeIntegration: false,
@@ -69,12 +70,15 @@ const getData = async (method: string, id: string = "0") => {
       case "getMatchList":
         // const data = getDataFromLCU.getMatchList();
         resolve(getDataFromLCU.getMatchList());
+        console.log("1");
       case "getRank":
         // const data = getDataFromLCU.getMatchList();
         resolve(getDataFromLCU.getRank());
+        console.log("12");
       case "getUser":
         // const data = getDataFromLCU.getMatchList();
         resolve(getDataFromLCU.getUser());
+        console.log("123");
       case "getState":
         // const data = getDataFromLCU.getMatchList();
         resolve(getDataFromLCU.getState());
@@ -85,9 +89,9 @@ const getData = async (method: string, id: string = "0") => {
   });
 };
 
-const test = async (): Promise<userInfo_type> => {
-  return getDataFromLCU.getUser();
-};
+// const test = async (): Promise<userInfo_type> => {
+//   return getDataFromLCU.getUser();
+// };
 app.on("ready", async () => {
   console.log("hi");
   // ipcMain.on("fromTest", async (event, data) => {
@@ -111,10 +115,12 @@ app.on("ready", async () => {
   ipcMain.handle("fromTest", async (event, data) => {
     console.log(`1 Received [${data}] from renderer browser`);
     // console.log(test());
-    let ee = await getData("getUser");
-    let tt = await getData("getRank");
-    event.sender.send("test", ee, tt);
-    console.log("asdf");
+    const ee: any = await getData("getMatchInfo", "6421508979");
+    fs.writeFile("matchinfo.json", JSON.stringify(ee), function () {
+      console.log("FM 매치엔진 json파일 생성완료");
+    });
+    event.sender.send("test", ee);
+    console.log("eeeeeeeeeeeeeaef");
   });
   createWindow();
   console.log("화면생성");
