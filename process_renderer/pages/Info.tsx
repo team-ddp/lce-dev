@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import styled from "styled-components";
 
+import spellJson from "../assets/spell.json";
+import testJson from "../../matchinfo.json";
+
 import { useDispatch, useSelector } from "react-redux";
 import { setDefaultInfo, setRankInfo, setStatus } from "../store/user";
 import { RootState } from "../store";
+import { store } from "../../process_renderer/store/store";
 
 import { rank_type, rank_interface } from "../types/rank";
 import {
@@ -24,6 +28,7 @@ const Container = styled.div`
   width: inherit;
   box-sizing: border-box;
   display: flex;
+  background-color: black;
   justify-content: center;
   align-items: center;
   height: 100%;
@@ -34,6 +39,7 @@ const Page = styled.div`
   height: inherit;
   box-sizing: border-box;
   display: flex;
+  /* background-color: black; */
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -56,14 +62,15 @@ const MoreInfo = styled.section`
   display: flex;
   box-sizing: border-box;
   background-color: orange;
-  margin-right: 30px;
+  margin-right: 33px;
   width: 245px;
   height: 371px;
 `;
 const MathList = styled.section`
   display: flex;
   box-sizing: border-box;
-  background-color: orange;
+  /* background-color: orange; */
+  flex-direction: column;
   /* width: 100%; */
   /* height: 100%; */
 `;
@@ -91,7 +98,20 @@ const Info = () => {
     setRankFlex(user.rank.queueMap.RANKED_FLEX_SR);
     console.log("Info_useEffect");
   }, []);
-  console.log(user.userInfo);
+  const summoner = JSON.parse(JSON.stringify(spellJson));
+  console.log(store.getState());
+
+  const matchHistory = user.recentMatchList.games.games.map(
+    (matchResult: any, num: number) => {
+      return (
+        <Match
+          matchResult={matchResult}
+          num={num}
+          key={matchResult.gameId}
+        ></Match>
+      );
+    }
+  );
 
   return (
     <Container>
@@ -99,7 +119,7 @@ const Info = () => {
         <Wrap>
           <UserSection>
             <Icons
-              src={`https://ddragon.leagueoflegends.com/cdn/13.4.1/img/profileicon/${userInfo.profileIconId}.png`}
+              src={`https://ddragon.leagueoflegends.com/cdn/13.8.1/img/profileicon/${userInfo.profileIconId}.png`}
               size="small"
             />
             <div
@@ -114,8 +134,8 @@ const Info = () => {
               <Text>LV : {userInfo.summonerLevel}</Text>
             </div>
             <Icons
-              src={`process_renderer/assets/ranked-emblem/${rankSolo.tier}.webp`}
-              size="medium"
+              src={`process_renderer/assets/ranked-emblem/${rankSolo.tier}.png`}
+              size="rank"
             />
             <div
               style={{
@@ -151,7 +171,7 @@ const Info = () => {
 
             <Icons
               src={`process_renderer/assets/ranked-emblem/${rankFlex.tier}.png`}
-              size="medium"
+              size="rank"
             />
             <div
               style={{
@@ -190,15 +210,13 @@ const Info = () => {
           <div
             style={{
               display: "flex",
-              marginTop: "39px",
+              marginTop: "38px",
               marginLeft: " 35px",
               marginRight: " 35px",
             }}
           >
             <MoreInfo></MoreInfo>
-            <MathList>
-              <Match></Match>
-            </MathList>
+            <MathList>{matchHistory}</MathList>
           </div>
         </Wrap>
       </Page>

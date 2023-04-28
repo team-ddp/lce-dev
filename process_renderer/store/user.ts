@@ -25,7 +25,12 @@ import { createSlice } from "@reduxjs/toolkit";
 //   }
 // }
 
-const initialState = { toggle: false, userInfo: {}, rank: {} };
+const initialState = {
+  toggle: false,
+  userInfo: {},
+  rank: {},
+  recentMatchList: {},
+};
 
 const userSlice = createSlice({
   name: "userInfo",
@@ -40,8 +45,12 @@ const userSlice = createSlice({
     setRankInfo: (state, action) => {
       state.rank = action.payload;
     },
+    getRecentMatchList: (state, action) => {
+      state.recentMatchList = action.payload;
+    },
   },
 });
 
-export const { setDefaultInfo, setRankInfo, setStatus } = userSlice.actions;
+export const { setDefaultInfo, setRankInfo, setStatus, getRecentMatchList } =
+  userSlice.actions;
 export default userSlice.reducer;

@@ -15,6 +15,10 @@ interface SizeProps {
 }
 
 const sizes: SizeProps = {
+  rank: {
+    height: "75px",
+    width: "110px",
+  },
   small: {
     height: "100px",
     width: "100px",

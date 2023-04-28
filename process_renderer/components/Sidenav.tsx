@@ -6,10 +6,20 @@ import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
 import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
 import ContentPasteSearchOutlinedIcon from "@mui/icons-material/ContentPasteSearchOutlined";
 import { interface_userInfo } from "../types/user";
+import spellJson from "../assets/spell.json";
+import testJson from "../../matchinfo.json";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setDefaultInfo, setRankInfo, setStatus } from "../store/user";
+import {
+  getRecentMatchList,
+  setDefaultInfo,
+  setRankInfo,
+  setStatus,
+} from "../store/user";
+
+import champ from "../assets/champion.json";
 import { RootState } from "../store";
+import { fstat } from "original-fs";
 
 // let if_userInfo = interface_userInfo;
 
@@ -61,6 +71,8 @@ const Sidenav = () => {
     dispatch(setStatus(true));
     dispatch(setDefaultInfo(data[0]));
     dispatch(setRankInfo(data[1]));
+    console.log("test" + data[2]);
+    dispatch(getRecentMatchList(data[2]));
     setclientConnect(true);
     window.api.removeAllListeners("clientConnect");
     // console.log(data);
@@ -76,6 +88,26 @@ const Sidenav = () => {
     window.api.invoke("fromTest", "eee");
     console.log("render to send");
   };
+
+  const test = () => {
+    let champions = new Array();
+    let key = new Array();
+
+    let aa = JSON.stringify(champ.data);
+
+    let json = JSON.parse(aa);
+    for (let k of Object.values(json)) {
+      champions.push(k.id);
+      key.push(k.key);
+    }
+    let ids: any = {};
+    for (let i = 0; i < champions.length; i++) {
+      ids[key[i]] = champions[i];
+    }
+
+    window.api.invoke("saveFile", ids);
+  };
+
   window.api.receive("test", (e, ...data) => {
     console.log(`Received from main process`);
     // window.api.removeAllListeners("test");
@@ -118,7 +150,7 @@ const Sidenav = () => {
           test
         </Item>
       </Items>
-      <Items onClick={count.toggle ? onClick : undefined}>
+      <Items onClick={count.toggle ? test : undefined}>
         <Item>
           <PersonSearchOutlinedIcon />
           test

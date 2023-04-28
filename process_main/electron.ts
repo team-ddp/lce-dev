@@ -17,6 +17,13 @@ import LcuApi from "./apis/lcu";
 import { app, BrowserWindow, ipcMain } from "electron";
 import fs from "fs";
 
+import {
+  setDefaultInfo,
+  setRankInfo,
+  setStatus,
+} from "../process_renderer/store/user";
+import { RootState } from "../process_renderer/store";
+
 console.log("init");
 
 app.disableHardwareAcceleration();
@@ -37,6 +44,7 @@ const createWindow = () => {
     title: "CGSP - powered py DDP",
     titleBarStyle: "hidden",
     resizable: false,
+    // transparent: true,
     webPreferences: {
       // enableRemoteModule: true,
       nodeIntegration: false,
@@ -60,7 +68,8 @@ const connectClient = async () => {
   mainWindow.webContents.send(
     "clientConnect",
     getDataFromLCU.user,
-    await getData("getRank")
+    await getData("getRank"),
+    await getData("getMatchList")
   );
 };
 
@@ -101,6 +110,7 @@ app.on("ready", async () => {
   //   // event.returnValue = JSON.stringify(ee);
   //   // mainWindow.webContents.send("test", JSON.stringify(ee));
   // });
+
   ipcMain.on("Quit-Process", () => {
     app.quit();
   });
@@ -115,12 +125,19 @@ app.on("ready", async () => {
   ipcMain.handle("fromTest", async (event, data) => {
     console.log(`1 Received [${data}] from renderer browser`);
     // console.log(test());
-    const ee: any = await getData("getMatchInfo", "6421508979");
-    fs.writeFile("matchinfo.json", JSON.stringify(ee), function () {
-      console.log("FM 매치엔진 json파일 생성완료");
+    const ee: any = await getData("getMatchList");
+    fs.writeFile("recentgame.json", JSON.stringify(ee), function () {
+      console.log("json파일 생성완료");
     });
     event.sender.send("test", ee);
     console.log("eeeeeeeeeeeeeaef");
+  });
+
+  ipcMain.handle("saveFile", async (event, data) => {
+    console.log(`1 Received from renderer browser`);
+    fs.writeFile("idToChamp.json", JSON.stringify(data), function () {
+      console.log("json파일 생성완료");
+    });
   });
   createWindow();
   console.log("화면생성");

@@ -35,6 +35,14 @@ import {
   LCU_GET_RANK,
 } from "../../consts/consts";
 
+import { store } from "../../process_renderer/store/store";
+import {
+  setDefaultInfo,
+  setRankInfo,
+  setStatus,
+} from "../../process_renderer/store/user";
+import { RootState } from "../../process_renderer/store";
+
 const time = 5000;
 
 export default class LCU {
@@ -42,6 +50,7 @@ export default class LCU {
   lolClientCredentials: Credentials;
   user: any;
   state: Boolean;
+  // store: Store;
 
   constructor(credentials: Credentials, connectClient: () => void) {
     return (async (): Promise<any> => {
@@ -132,6 +141,9 @@ export default class LCU {
       this.LCURequest("GET", LCU_USER_STATUS)
         .then((result: any) => {
           console.log(result);
+          store.dispatch(setDefaultInfo(result));
+          console.log(store.getState());
+          console.log("asdfsadfdf");
           resolve(result);
         })
         .catch(() => {

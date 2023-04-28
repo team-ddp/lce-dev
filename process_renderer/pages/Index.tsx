@@ -27,9 +27,10 @@ const Side = styled.div`
 `;
 const Page = styled.div`
   width: 100%;
-  overflow: auto;
+  overflow: overlay;
+  background-color: black;
   ::-webkit-scrollbar {
-    width: 13px;
+    width: 11px;
   }
   ::-webkit-scrollbar-thumb {
     background-color: #1a1a1a;

@@ -11,6 +11,7 @@ const App = () => {
       <Provider store={store}>
         <Window />
       </Provider>
+      {/* <Window /> */}
     </React.StrictMode>
   );
 };

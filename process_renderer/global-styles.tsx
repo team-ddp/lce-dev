@@ -6,9 +6,10 @@ const GlobalStyle = createGlobalStyle`
   html, body{
     width: 100%;
     height: 100%;
-    background-color: black;
-    /* background-color: #1a1a1a; */
+    background-color: #1a1a1a;
     opacity: 87%;
+    /* background-color: rgb 0 0 0; */
+    /* opacity: 60%; */
   }
   #root {
     width: inherit;
