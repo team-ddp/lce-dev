@@ -2,6 +2,7 @@ import React, { Children } from "react";
 import styled, { css } from "styled-components";
 import spellJson from "../assets/spell.json";
 import idtoChamp from "../assets/idToChamp.json";
+// import matchJson from "../assets/matchInfo"
 
 interface BoxProps extends React.ComponentProps<"div"> {
   color?: string;
@@ -20,15 +21,58 @@ interface MatchProps extends React.ComponentProps<"div"> {
   children?: React.ReactNode;
 }
 
-interface SizeProps {
+interface BoxSizeProps {
   [index: string]: {
     height: string;
     width: string;
   };
 }
+interface TextSizeProps {
+  [index: string]: {
+    font: string;
+  };
+}
+
+const boxSizes: BoxSizeProps = {
+  small: {
+    height: "25px",
+    width: "25px",
+  },
+  medium: {
+    height: "30px",
+    width: "30px",
+  },
+  large: {
+    height: "30px",
+    width: "30px",
+  },
+};
+const TextSizes: TextSizeProps = {
+  small: {
+    font: "12px",
+  },
+  medium: {
+    font: "16px",
+  },
+  large: {
+    font: "30px",
+  },
+};
+
+const BoxSizeStyles = css`
+  ${(props: BoxProps) => css`
+    height: ${props.size && boxSizes[props.size].height};
+    width: ${props.size && boxSizes[props.size].width};
+  `}
+`;
+const TextSizeStyles = css`
+  ${(props: BoxProps) => css`
+    font-size: ${props.size && TextSizes[props.size].font};
+  `}
+`;
 
 const Wrap = styled.div`
-  height: 150px;
+  height: 130px;
   width: 920px;
   background-color: #2a2a2d;
   display: flex;
@@ -40,55 +84,40 @@ const ComponentWrap = styled.div`
   display: flex;
 `;
 const ResultLine = styled.div`
-  width: 20px;
-  height: 150px;
+  width: 10px;
+  height: 130px;
   background-color: red;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 `;
+const MoreInfo = styled.div`
+  width: 40px;
+  height: 130px;
+  background-color: gray;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+`;
 
 const Champimg = styled.div`
   border-radius: 100%;
-  width: 123px;
-  height: 123px;
+  width: 70px;
+  height: 70px;
   /* background-color: white; */
-  margin-right: 22px;
-  margin-left: 26px;
+  /* margin-right: 22px;
+  margin-left: 26px; */
   overflow: hidden;
 `;
 
 const Text = styled.span`
+  ${TextSizeStyles};
   font-weight: 500;
   display: inline-block;
   color: white;
-  font-size: 18px;
   line-height: 25px;
 `;
 
-const sizes: SizeProps = {
-  small: {
-    height: "40px",
-    width: "40px",
-  },
-  medium: {
-    height: "68px",
-    width: "68px",
-  },
-  large: {
-    height: "30px",
-    width: "30px",
-  },
-};
-
-const sizeStyles = css`
-  ${(props: BoxProps) => css`
-    height: ${props.size && sizes[props.size].height};
-    width: ${props.size && sizes[props.size].width};
-  `}
-`;
-
 const Box = styled.div`
-  ${sizeStyles};
+  ${BoxSizeStyles};
   background-color: gray;
   /* border: 1px solid gray; */
   margin-right: 3px;
@@ -103,20 +132,29 @@ const Img = styled.img`
   height: 100%;
   border-radius: 5px;
 `;
-
+const itemBox = (data: any) => {
+  const matchData = [];
+  for (let i = 0; i < 7; i++) {
+    matchData.push(
+      <Box size="medium">
+        <Img
+          src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/item/${
+            data.participants[0].stats[`item${i}`]
+          }.png`}
+          onError={(event) => (event.currentTarget.style.display = "none")}
+          key={data.participants[0].stats[`item${i}`]}
+        />
+      </Box>
+    );
+  }
+  return matchData;
+};
 const summoner = JSON.parse(JSON.stringify(spellJson));
 const champId = JSON.parse(JSON.stringify(idtoChamp));
 const Match = ({ matchResult, num }: MatchProps) => {
   return (
     <Wrap>
       <ResultLine />
-      <Champimg>
-        <Img
-          src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
-            champId[matchResult.participants[0].championId]
-          }.png`}
-        />
-      </Champimg>
       <div
         style={{
           display: "flex",
@@ -127,97 +165,57 @@ const Match = ({ matchResult, num }: MatchProps) => {
           boxSizing: "border-box",
         }}
       >
+        <Text size="medium">패배</Text>
         <Text
+          size="small"
           style={{
-            fontSize: "22px",
-            marginBottom: "12px",
+            marginBottom: "15px",
           }}
         >
-          패배
+          24분 30초
         </Text>
-        <Text>자유랭크 게임</Text>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginTop: "9px",
-          }}
-        >
-          <Box size="small">
-            <Img
-              src={`https://ddragon.leagueoflegends.com/cdn/13.8.1/img/spell/${
-                summoner.spell[matchResult.participants[0].spell1Id]
-              }.png`}
-            />
-          </Box>
-          <Box size="small">
-            <Img
-              src={`https://ddragon.leagueoflegends.com/cdn/13.8.1/img/spell/${
-                summoner.spell[matchResult.participants[0].spell2Id]
-              }.png`}
-            />
-          </Box>
-        </div>
+        <Text size="medium">자유랭크</Text>
+        <Text size="small">2023 / 03 / 30</Text>
       </div>
-      <div
+      <ComponentWrap
         style={{
-          display: "flex",
           flexDirection: "column",
-          // backgroundColor: "black",
-          justifyContent: "center",
-          width: "510px",
-          marginLeft: "54px",
-          marginTop: "4px",
-          boxSizing: "border-box",
+          width: "250px",
         }}
       >
-        <div
+        <ComponentWrap
           style={{
-            display: "flex",
+            marginBottom: "10px",
           }}
         >
-          <Box size="medium">
+          <Champimg>
             <Img
-              src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/item/${matchResult.participants[0].stats.item0}.png`}
+              src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                champId[matchResult.participants[0].championId]
+              }.png`}
             />
-          </Box>
-          <Box size="medium">
-            <Img
-              src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/item/${matchResult.participants[0].stats.item1}.png`}
-            />
-          </Box>
-          <Box size="medium">
-            <Img
-              src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/item/${matchResult.participants[0].stats.item2}.png`}
-            />
-          </Box>
-          <Box size="medium">
-            <Img
-              src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/item/${matchResult.participants[0].stats.item3}.png`}
-            />
-          </Box>
-          <Box size="medium">
-            <Img
-              src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/item/${matchResult.participants[0].stats.item4}.png`}
-            />
-          </Box>
-          <Box size="medium">
-            <Img
-              src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/item/${matchResult.participants[0].stats.item5}.png`}
-            />
-          </Box>
-          <Box size="medium">
-            <Img
-              src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/item/${matchResult.participants[0].stats.item6}.png`}
-            />
-          </Box>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            marginTop: "14px",
-          }}
-        >
+          </Champimg>
+          <ComponentWrap
+            style={{
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Box size="small">
+              <Img
+                src={`https://ddragon.leagueoflegends.com/cdn/13.8.1/img/spell/${
+                  summoner.spell[matchResult.participants[0].spell1Id]
+                }.png`}
+              />
+            </Box>
+            <Box size="small">
+              <Img
+                src={`https://ddragon.leagueoflegends.com/cdn/13.8.1/img/spell/${
+                  summoner.spell[matchResult.participants[0].spell2Id]
+                }.png`}
+              />
+            </Box>
+          </ComponentWrap>
           <ComponentWrap
             style={{
               justifyContent: "center",
@@ -230,33 +228,221 @@ const Match = ({ matchResult, num }: MatchProps) => {
                 alignItems: "center",
               }}
             >
-              <Text>14 / 5 / 19</Text>
-              <Text>2.00 : 1 평점</Text>
+              <Text size="medium">14 / 5 / 19 </Text>
+              <Text size="medium">KDA 1.5</Text>
             </ComponentWrap>
-            <ComponentWrap
+            {/* <ComponentWrap
               style={{
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                marginLeft: "35px",
+                marginLeft: "10px",
               }}
             >
-              <Text>CS 140 (8.3)</Text>
-            </ComponentWrap>
-            <ComponentWrap
-              style={{
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                marginLeft: "150px",
-              }}
-            >
-              <Text>24분 30초</Text>
-              <Text>2023 / 03 / 30</Text>
-            </ComponentWrap>
+              <Text size="medium">CS 140 (8.3)</Text>
+            </ComponentWrap> */}
           </ComponentWrap>
+        </ComponentWrap>
+        <div
+          style={{
+            display: "flex",
+          }}
+        >
+          {itemBox(matchResult)}
         </div>
-      </div>
+      </ComponentWrap>
+
+      <ComponentWrap
+        style={{
+          flexDirection: "column",
+        }}
+      >
+        <Text size="medium">CS 140 (8.3)</Text>
+        <Text size="medium">CS 140 (8.3)</Text>
+      </ComponentWrap>
+
+      <ComponentWrap>
+        <ComponentWrap
+          style={{
+            flexDirection: "column",
+            marginLeft: "20px",
+            marginRight: "20px",
+          }}
+        >
+          <ComponentWrap>
+            <Champimg
+              style={{
+                width: "20px",
+                height: "20px",
+                marginRight: "5px",
+              }}
+            >
+              <Img
+                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                  champId[matchResult.participants[0].championId]
+                }.png`}
+              />
+            </Champimg>
+            <Text size="small">진똘끼</Text>
+          </ComponentWrap>
+          <ComponentWrap>
+            <Champimg
+              style={{
+                width: "20px",
+                height: "20px",
+                marginRight: "5px",
+              }}
+            >
+              <Img
+                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                  champId[matchResult.participants[0].championId]
+                }.png`}
+              />
+            </Champimg>
+            <Text size="small">딱스하기젝좋다</Text>
+          </ComponentWrap>
+          <ComponentWrap>
+            <Champimg
+              style={{
+                width: "20px",
+                height: "20px",
+                marginRight: "5px",
+              }}
+            >
+              <Img
+                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                  champId[matchResult.participants[0].championId]
+                }.png`}
+              />
+            </Champimg>
+            <Text size="small">오른왼쪽으로간다</Text>
+          </ComponentWrap>
+          <ComponentWrap>
+            <Champimg
+              style={{
+                width: "20px",
+                height: "20px",
+                marginRight: "5px",
+              }}
+            >
+              <Img
+                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                  champId[matchResult.participants[0].championId]
+                }.png`}
+              />
+            </Champimg>
+            <Text size="small">황변발</Text>
+          </ComponentWrap>
+          <ComponentWrap>
+            <Champimg
+              style={{
+                width: "20px",
+                height: "20px",
+                marginRight: "5px",
+              }}
+            >
+              <Img
+                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                  champId[matchResult.participants[0].championId]
+                }.png`}
+              />
+            </Champimg>
+            <Text size="small">그냥 하기나 해</Text>
+          </ComponentWrap>
+        </ComponentWrap>
+
+        {/* 상댕팀 */}
+
+        <ComponentWrap
+          style={{
+            flexDirection: "column",
+            marginLeft: "20px",
+            marginRight: "20px",
+          }}
+        >
+          <ComponentWrap>
+            <Champimg
+              style={{
+                width: "20px",
+                height: "20px",
+                marginRight: "5px",
+              }}
+            >
+              <Img
+                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                  champId[matchResult.participants[0].championId]
+                }.png`}
+              />
+            </Champimg>
+            <Text size="small">진똘끼</Text>
+          </ComponentWrap>
+          <ComponentWrap>
+            <Champimg
+              style={{
+                width: "20px",
+                height: "20px",
+                marginRight: "5px",
+              }}
+            >
+              <Img
+                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                  champId[matchResult.participants[0].championId]
+                }.png`}
+              />
+            </Champimg>
+            <Text size="small">딱스하기젝좋다</Text>
+          </ComponentWrap>
+          <ComponentWrap>
+            <Champimg
+              style={{
+                width: "20px",
+                height: "20px",
+                marginRight: "5px",
+              }}
+            >
+              <Img
+                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                  champId[matchResult.participants[0].championId]
+                }.png`}
+              />
+            </Champimg>
+            <Text size="small">오른왼쪽으로간다</Text>
+          </ComponentWrap>
+          <ComponentWrap>
+            <Champimg
+              style={{
+                width: "20px",
+                height: "20px",
+                marginRight: "5px",
+              }}
+            >
+              <Img
+                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                  champId[matchResult.participants[0].championId]
+                }.png`}
+              />
+            </Champimg>
+            <Text size="small">황변발</Text>
+          </ComponentWrap>
+          <ComponentWrap>
+            <Champimg
+              style={{
+                width: "20px",
+                height: "20px",
+                marginRight: "5px",
+              }}
+            >
+              <Img
+                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                  champId[matchResult.participants[0].championId]
+                }.png`}
+              />
+            </Champimg>
+            <Text size="small">그냥 하기나 해</Text>
+          </ComponentWrap>
+        </ComponentWrap>
+      </ComponentWrap>
+      <MoreInfo />
     </Wrap>
   );
 };

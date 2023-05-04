@@ -23,6 +23,7 @@ import {
   setStatus,
 } from "../process_renderer/store/user";
 import { RootState } from "../process_renderer/store";
+import { object } from "prop-types";
 
 console.log("init");
 
@@ -131,6 +132,20 @@ app.on("ready", async () => {
     });
     event.sender.send("test", ee);
     console.log("eeeeeeeeeeeeeaef");
+  });
+
+  ipcMain.handle("getMatchInfo", async (event, data) => {
+    console.log(`1 Received [${data}] from renderer browser`);
+    for (let i = 0; i < data.length; i++) {
+      let matchData = await getData("getMatchInfo", data[i].gameId);
+      fs.writeFile(
+        `${data[i].gameId}.json`,
+        JSON.stringify(matchData),
+        function () {
+          console.log("json파일 생성완료");
+        }
+      );
+    }
   });
 
   ipcMain.handle("saveFile", async (event, data) => {

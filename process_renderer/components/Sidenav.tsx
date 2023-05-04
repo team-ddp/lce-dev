@@ -15,6 +15,7 @@ import {
   setDefaultInfo,
   setRankInfo,
   setStatus,
+  getMatchInfo,
 } from "../store/user";
 
 import champ from "../assets/champion.json";
@@ -71,8 +72,8 @@ const Sidenav = () => {
     dispatch(setStatus(true));
     dispatch(setDefaultInfo(data[0]));
     dispatch(setRankInfo(data[1]));
-    console.log("test" + data[2]);
     dispatch(getRecentMatchList(data[2]));
+
     setclientConnect(true);
     window.api.removeAllListeners("clientConnect");
     // console.log(data);
@@ -89,13 +90,14 @@ const Sidenav = () => {
     console.log("render to send");
   };
 
-  const test = () => {
+  // 챔프 id를 이름으로
+  const changeChampId = () => {
     let champions = new Array();
     let key = new Array();
 
     let aa = JSON.stringify(champ.data);
-
     let json = JSON.parse(aa);
+
     for (let k of Object.values(json)) {
       champions.push(k.id);
       key.push(k.key);
@@ -107,7 +109,15 @@ const Sidenav = () => {
 
     window.api.invoke("saveFile", ids);
   };
+  const test = () => {
+    const data = count.recentMatchList.games.games;
+    window.api.invoke("getMatchInfo", data);
+  };
 
+  window.api.receive("giveMatchInfo", (e, data) => {
+    console.log(`Received MatchInfo from main process`);
+    dispatch(getMatchInfo(data));
+  });
   window.api.receive("test", (e, ...data) => {
     console.log(`Received from main process`);
     // window.api.removeAllListeners("test");

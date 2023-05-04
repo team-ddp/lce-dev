@@ -30,6 +30,7 @@ const initialState = {
   userInfo: {},
   rank: {},
   recentMatchList: {},
+  getMatchInfo: [],
 };
 
 const userSlice = createSlice({
@@ -48,9 +49,17 @@ const userSlice = createSlice({
     getRecentMatchList: (state, action) => {
       state.recentMatchList = action.payload;
     },
+    getMatchInfo: (state, action) => {
+      state.getMatchInfo = action.payload;
+    },
   },
 });
 
-export const { setDefaultInfo, setRankInfo, setStatus, getRecentMatchList } =
-  userSlice.actions;
+export const {
+  setDefaultInfo,
+  setRankInfo,
+  setStatus,
+  getRecentMatchList,
+  getMatchInfo,
+} = userSlice.actions;
 export default userSlice.reducer;

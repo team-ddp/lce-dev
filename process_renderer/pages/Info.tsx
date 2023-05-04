@@ -136,6 +136,7 @@ const Info = () => {
             <Icons
               src={`process_renderer/assets/ranked-emblem/${rankSolo.tier}.png`}
               size="rank"
+              onError={(event) => (event.currentTarget.style.display = "none")}
             />
             <div
               style={{
@@ -172,6 +173,7 @@ const Info = () => {
             <Icons
               src={`process_renderer/assets/ranked-emblem/${rankFlex.tier}.png`}
               size="rank"
+              onError={(event) => (event.currentTarget.style.display = "none")}
             />
             <div
               style={{
