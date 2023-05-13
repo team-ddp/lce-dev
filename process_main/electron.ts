@@ -137,7 +137,7 @@ app.on("ready", async () => {
   ipcMain.handle("getMatchInfo", async (event, data) => {
     console.log(`1 Received [${data}] from renderer browser`);
     for (let i = 0; i < data.length; i++) {
-      let matchData = await getData("getMatchInfo", data[i].gameId);
+      let matchData = await getData("getMatchList");
       fs.writeFile(
         `${data[i].gameId}.json`,
         JSON.stringify(matchData),

@@ -91,24 +91,25 @@ const Sidenav = () => {
   };
 
   // 챔프 id를 이름으로
-  const changeChampId = () => {
-    let champions = new Array();
-    let key = new Array();
+  // const changeChampId = () => {
+  //   let champions = new Array();
+  //   let key = new Array();
 
-    let aa = JSON.stringify(champ.data);
-    let json = JSON.parse(aa);
+  //   let aa = JSON.stringify(champ.data);
+  //   let json = JSON.parse(aa);
 
-    for (let k of Object.values(json)) {
-      champions.push(k.id);
-      key.push(k.key);
-    }
-    let ids: any = {};
-    for (let i = 0; i < champions.length; i++) {
-      ids[key[i]] = champions[i];
-    }
+  //   for (let k of Object.values(json)) {
+  //     champions.push(k.id);
+  //     key.push(k.key);
+  //   }
+  //   let ids: any = {};
+  //   for (let i = 0; i < champions.length; i++) {
+  //     ids[key[i]] = champions[i];
+  //   }
 
-    window.api.invoke("saveFile", ids);
-  };
+  //   window.api.invoke("saveFile", ids);
+  // };
+
   const test = () => {
     const data = count.recentMatchList.games.games;
     window.api.invoke("getMatchInfo", data);

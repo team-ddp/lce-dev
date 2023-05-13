@@ -16,6 +16,7 @@ dist-ssr
 *.local
 process_renderer/assets/ranked-emblem
 assets
+.env
 
 # Editor directories and files
 .vscode/*
