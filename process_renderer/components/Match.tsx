@@ -4,6 +4,7 @@ import spellJson from "../assets/spell.json";
 import idtoChamp from "../assets/idToChamp.json";
 import gameType from "../assets/matchType.json";
 import ToolTip from "./ToolTip";
+import detail from "../assets/matchInfo/6488380954.json";
 // import matchJson from "../assets/matchInfo"
 
 interface BoxProps extends React.ComponentProps<"div"> {
@@ -135,30 +136,24 @@ const Img = styled.img`
   border-radius: 5px;
 `;
 
-const itemHover = () => {
-  console.log("itemInfo");
-  return (
-    <div>
-      Hovering right meow!
-      <span role="img" aria-label="cat">
-        🐱
-      </span>
-    </div>
-  );
-};
-
 const itemBox = (data: any) => {
   const matchData = [];
   for (let i = 0; i < 7; i++) {
+    let isHover = true;
+    if (data.participants[0].stats[`item${i}`] == 0) {
+      isHover = false;
+    }
     matchData.push(
       <div
         style={{
           position: "relative",
         }}
       >
-        {/* <ToolTip itemCode={data.participants[0].stats[`item${i}`]} /> */}
-        <ToolTip itemCode={data.participants[0].stats[`item${i}`]}>
-          <Box size="medium" onMouseOver={itemHover}>
+        <ToolTip
+          itemCode={data.participants[0].stats[`item${i}`]}
+          isHover={isHover}
+        >
+          <Box size="medium">
             <Img
               src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/item/${
                 data.participants[0].stats[`item${i}`]
@@ -173,11 +168,47 @@ const itemBox = (data: any) => {
   }
   return matchData;
 };
+
+const playerBox = (data: any, num: number) => {
+  const matchData = [];
+  for (let i = num; i < 5 + num; i++) {
+    // i += num;
+    matchData.push(
+      <div
+        style={{
+          position: "relative",
+        }}
+      >
+        <ComponentWrap>
+          <Champimg
+            style={{
+              width: "20px",
+              height: "20px",
+              marginRight: "5px",
+            }}
+          >
+            <Img
+              src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                champId[data.participants[i].championId]
+              }.png`}
+            />
+          </Champimg>
+          <Text size="small">
+            {data.participantIdentities[i].player.summonerName}
+          </Text>
+        </ComponentWrap>
+      </div>
+    );
+  }
+  return matchData;
+};
 const summoner = JSON.parse(JSON.stringify(spellJson));
 const champId = JSON.parse(JSON.stringify(idtoChamp));
 const matchType = JSON.parse(JSON.stringify(gameType));
 
 const Match = ({ matchResult, num }: MatchProps) => {
+  const startTime = new Date(matchResult.gameCreation);
+  const durationTime = matchResult.gameDuration;
   return (
     <Wrap>
       <ResultLine
@@ -192,7 +223,7 @@ const Match = ({ matchResult, num }: MatchProps) => {
           display: "flex",
           flexDirection: "column",
           height: "107px",
-          width: "115px",
+          width: "125px",
           paddingLeft: "16px",
           boxSizing: "border-box",
         }}
@@ -211,17 +242,26 @@ const Match = ({ matchResult, num }: MatchProps) => {
             marginBottom: "15px",
           }}
         >
-          24분 30초
+          {Math.floor(matchResult.gameDuration / 60)}분{" "}
+          {matchResult.gameDuration % 60}초
         </Text>
-        <Text size="medium">
+        <Text
+          size="medium"
+          style={{
+            color: matchResult.participants[0].stats.win ? "aqua" : "red",
+          }}
+        >
           {matchResult.participants[0].stats.win ? "승리" : "패배"}
         </Text>
-        <Text size="small">2023 / 03 / 30</Text>
+        <Text size="small">
+          {startTime.getFullYear().toString().slice(-4)}년{" "}
+          {startTime.getMonth() + 1}월 {startTime.getDate()}일
+        </Text>
       </div>
       <ComponentWrap
         style={{
           flexDirection: "column",
-          width: "250px",
+          width: "240px",
         }}
       >
         <ComponentWrap
@@ -286,16 +326,6 @@ const Match = ({ matchResult, num }: MatchProps) => {
                 ) / 10}
               </Text>
             </ComponentWrap>
-            {/* <ComponentWrap
-              style={{
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                marginLeft: "10px",
-              }}
-            >
-              <Text size="medium">CS 140 (8.3)</Text>
-            </ComponentWrap> */}
           </ComponentWrap>
         </ComponentWrap>
         <div
@@ -335,90 +365,10 @@ const Match = ({ matchResult, num }: MatchProps) => {
             marginRight: "20px",
           }}
         >
-          <ComponentWrap>
-            <Champimg
-              style={{
-                width: "20px",
-                height: "20px",
-                marginRight: "5px",
-              }}
-            >
-              <Img
-                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
-                  champId[matchResult.participants[0].championId]
-                }.png`}
-              />
-            </Champimg>
-            <Text size="small">진똘끼</Text>
-          </ComponentWrap>
-          <ComponentWrap>
-            <Champimg
-              style={{
-                width: "20px",
-                height: "20px",
-                marginRight: "5px",
-              }}
-            >
-              <Img
-                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
-                  champId[matchResult.participants[0].championId]
-                }.png`}
-              />
-            </Champimg>
-            <Text size="small">딱스하기젝좋다</Text>
-          </ComponentWrap>
-
-          <ComponentWrap>
-            <Champimg
-              style={{
-                width: "20px",
-                height: "20px",
-                marginRight: "5px",
-              }}
-            >
-              <Img
-                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
-                  champId[matchResult.participants[0].championId]
-                }.png`}
-              />
-            </Champimg>
-            <Text size="small">오른왼쪽으로간다</Text>
-          </ComponentWrap>
-          <ComponentWrap>
-            <Champimg
-              style={{
-                width: "20px",
-                height: "20px",
-                marginRight: "5px",
-              }}
-            >
-              <Img
-                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
-                  champId[matchResult.participants[0].championId]
-                }.png`}
-              />
-            </Champimg>
-            <Text size="small">황변발</Text>
-          </ComponentWrap>
-          <ComponentWrap>
-            <Champimg
-              style={{
-                width: "20px",
-                height: "20px",
-                marginRight: "5px",
-              }}
-            >
-              <Img
-                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
-                  champId[matchResult.participants[0].championId]
-                }.png`}
-              />
-            </Champimg>
-            <Text size="small">그냥 하기나 해</Text>
-          </ComponentWrap>
+          {playerBox(detail, 0)}
         </ComponentWrap>
 
-        {/* 상댕팀 */}
+        {/* 상대팀 */}
 
         <ComponentWrap
           style={{
@@ -427,86 +377,7 @@ const Match = ({ matchResult, num }: MatchProps) => {
             marginRight: "20px",
           }}
         >
-          <ComponentWrap>
-            <Champimg
-              style={{
-                width: "20px",
-                height: "20px",
-                marginRight: "5px",
-              }}
-            >
-              <Img
-                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
-                  champId[matchResult.participants[0].championId]
-                }.png`}
-              />
-            </Champimg>
-            <Text size="small">진똘끼</Text>
-          </ComponentWrap>
-          <ComponentWrap>
-            <Champimg
-              style={{
-                width: "20px",
-                height: "20px",
-                marginRight: "5px",
-              }}
-            >
-              <Img
-                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
-                  champId[matchResult.participants[0].championId]
-                }.png`}
-              />
-            </Champimg>
-            <Text size="small">딱스하기젝좋다</Text>
-          </ComponentWrap>
-          <ComponentWrap>
-            <Champimg
-              style={{
-                width: "20px",
-                height: "20px",
-                marginRight: "5px",
-              }}
-            >
-              <Img
-                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
-                  champId[matchResult.participants[0].championId]
-                }.png`}
-              />
-            </Champimg>
-            <Text size="small">오른왼쪽으로간다</Text>
-          </ComponentWrap>
-          <ComponentWrap>
-            <Champimg
-              style={{
-                width: "20px",
-                height: "20px",
-                marginRight: "5px",
-              }}
-            >
-              <Img
-                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
-                  champId[matchResult.participants[0].championId]
-                }.png`}
-              />
-            </Champimg>
-            <Text size="small">황변발</Text>
-          </ComponentWrap>
-          <ComponentWrap>
-            <Champimg
-              style={{
-                width: "20px",
-                height: "20px",
-                marginRight: "5px",
-              }}
-            >
-              <Img
-                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
-                  champId[matchResult.participants[0].championId]
-                }.png`}
-              />
-            </Champimg>
-            <Text size="small">그냥 하기나 해</Text>
-          </ComponentWrap>
+          {playerBox(detail, 5)}
         </ComponentWrap>
       </ComponentWrap>
       <MoreInfo />

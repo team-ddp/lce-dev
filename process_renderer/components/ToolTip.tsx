@@ -5,6 +5,11 @@ import item from "../assets/item.json";
 interface itemId {
   itemCode: any;
   children: React.ReactNode;
+  isHover: boolean;
+}
+
+interface HoverProps extends React.ComponentProps<"div"> {
+  hover: boolean;
 }
 
 const Wrap = styled.div`
@@ -38,9 +43,13 @@ const ToolTipWrap = styled.div`
   padding: 10px;
   display: none;
   border-radius: 8px;
-  ${Wrap}:hover & {
-    display: block;
-  }
+  ${(props: HoverProps) =>
+    props.hover &&
+    css`
+      ${Wrap}: hover && {
+        display: block;
+      }
+    `}
 `;
 const Text = styled.span`
   font-weight: 500;
@@ -49,20 +58,40 @@ const Text = styled.span`
   color: white;
 `;
 
+const Stats = styled.span`
+  color: blue;
+`;
+
+const itemDes = (data: string[]) => {
+  return data.map((el: string) => {
+    return (
+      <Text
+        dangerouslySetInnerHTML={{
+          __html: el,
+        }}
+      />
+    );
+  });
+};
+
 const itemJson = JSON.parse(JSON.stringify(item));
 
-const ToolTip = ({ children, itemCode }: itemId) => {
+const ToolTip = ({ children, itemCode, isHover }: itemId) => {
+  const des = itemJson.data[itemCode].description.split("</stats>");
+
   return (
     <Wrap>
       {children}
-      <ToolTipWrap>
+      <ToolTipWrap hover={isHover}>
         <Text>{itemJson.data[itemCode].name}</Text>
         <br />
-        <Text
+        <br />
+        {itemDes(des)}
+        {/* <Text
           dangerouslySetInnerHTML={{
-            __html: itemJson.data[itemCode].description,
+            __html: des.map((el) => {}),
           }}
-        />
+        /> */}
         <Arrow />
       </ToolTipWrap>
     </Wrap>
