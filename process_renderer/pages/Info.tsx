@@ -23,6 +23,7 @@ import { RANK_EMBLEM } from "../../consts/consts";
 import Icons from "../components/Icons";
 import Piechart from "../components/Chart";
 import Match from "../components/Match";
+import MatchDetail from "../components/MatchDetail";
 
 const Container = styled.div`
   width: inherit;
@@ -104,11 +105,9 @@ const Info = () => {
   const matchHistory = user.recentMatchList.games.games.map(
     (matchResult: any, num: number) => {
       return (
-        <Match
-          matchResult={matchResult}
-          num={num}
-          key={matchResult.gameId}
-        ></Match>
+        <div>
+          <Match matchResult={matchResult} num={num} key={matchResult.gameId} />
+        </div>
       );
     }
   );

@@ -5,6 +5,9 @@ import idtoChamp from "../assets/idToChamp.json";
 import gameType from "../assets/matchType.json";
 import ToolTip from "./ToolTip";
 import detail from "../assets/matchInfo/6488380954.json";
+import MatchDetail from "./MatchDetail";
+import { useDispatch, useSelector } from "react-redux";
+import { getMatchDetail } from "../store/user";
 // import matchJson from "../assets/matchInfo"
 
 interface BoxProps extends React.ComponentProps<"div"> {
@@ -75,6 +78,11 @@ const TextSizeStyles = css`
 `;
 
 const Wrap = styled.div`
+  width: 920px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+`;
+const MatchWrap = styled.div`
   height: 130px;
   width: 920px;
   background-color: #2a2a2d;
@@ -92,13 +100,6 @@ const ResultLine = styled.div`
   /* background-color: aqua; */
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-`;
-const MoreInfo = styled.div`
-  width: 40px;
-  height: 130px;
-  background-color: gray;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
 `;
 
 const Champimg = styled.div`
@@ -135,6 +136,14 @@ const Img = styled.img`
   height: 100%;
   border-radius: 5px;
 `;
+const MoreInfo = styled.button`
+  cursor: pointer;
+  width: 40px;
+  height: 130px;
+  background-color: gray;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+`;
 
 const itemBox = (data: any) => {
   const matchData = [];
@@ -152,6 +161,7 @@ const itemBox = (data: any) => {
         <ToolTip
           itemCode={data.participants[0].stats[`item${i}`]}
           isHover={isHover}
+          key={data.participants[0].stats[`item${i}`]}
         >
           <Box size="medium">
             <Img
@@ -172,7 +182,6 @@ const itemBox = (data: any) => {
 const playerBox = (data: any, num: number) => {
   const matchData = [];
   for (let i = num; i < 5 + num; i++) {
-    // i += num;
     matchData.push(
       <div
         style={{
@@ -205,182 +214,222 @@ const playerBox = (data: any, num: number) => {
 const summoner = JSON.parse(JSON.stringify(spellJson));
 const champId = JSON.parse(JSON.stringify(idtoChamp));
 const matchType = JSON.parse(JSON.stringify(gameType));
-
 const Match = ({ matchResult, num }: MatchProps) => {
+  const [dropdownVisibility, setDropdownVisibility] = React.useState(false);
   const startTime = new Date(matchResult.gameCreation);
   const durationTime = matchResult.gameDuration;
+  const dispatch = useDispatch();
+
+  const dropDownDetail = (gameId: any) => {
+    setDropdownVisibility(!dropdownVisibility);
+    if (!dropdownVisibility) {
+      // window.api.invoke("getMatchDetail", gameId).then((data: any) => {
+      //   console.log("asdf");
+      //   dispatch(getMatchDetail(data));
+      // });
+      console.log(dropdownVisibility);
+      window.api.removeAllListeners("getMatchDetail");
+    }
+  };
   return (
     <Wrap>
-      <ResultLine
-        style={{
-          backgroundColor: matchResult.participants[0].stats.win
-            ? "aqua"
-            : "red",
-        }}
-      />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          height: "107px",
-          width: "125px",
-          paddingLeft: "16px",
-          boxSizing: "border-box",
-        }}
-      >
-        <Text
-          size="medium"
+      <MatchWrap>
+        <ResultLine
           style={{
-            color: matchResult.participants[0].stats.win ? "aqua" : "red",
+            backgroundColor: matchResult.participants[0].stats.win
+              ? "aqua"
+              : "red",
+          }}
+        />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "107px",
+            width: "125px",
+            paddingLeft: "16px",
+            boxSizing: "border-box",
           }}
         >
-          {matchType[matchResult.queueId]}
-        </Text>
-        <Text
-          size="small"
-          style={{
-            marginBottom: "15px",
-          }}
-        >
-          {Math.floor(matchResult.gameDuration / 60)}분{" "}
-          {matchResult.gameDuration % 60}초
-        </Text>
-        <Text
-          size="medium"
-          style={{
-            color: matchResult.participants[0].stats.win ? "aqua" : "red",
-          }}
-        >
-          {matchResult.participants[0].stats.win ? "승리" : "패배"}
-        </Text>
-        <Text size="small">
-          {startTime.getFullYear().toString().slice(-4)}년{" "}
-          {startTime.getMonth() + 1}월 {startTime.getDate()}일
-        </Text>
-      </div>
-      <ComponentWrap
-        style={{
-          flexDirection: "column",
-          width: "240px",
-        }}
-      >
+          <Text
+            size="medium"
+            style={{
+              color: matchResult.participants[0].stats.win ? "aqua" : "red",
+            }}
+          >
+            {matchType[matchResult.queueId]}
+          </Text>
+          <Text
+            size="small"
+            style={{
+              marginBottom: "15px",
+            }}
+          >
+            {Math.floor(matchResult.gameDuration / 60)}분{" "}
+            {matchResult.gameDuration % 60}초
+          </Text>
+          <Text
+            size="medium"
+            style={{
+              color: matchResult.participants[0].stats.win ? "aqua" : "red",
+            }}
+          >
+            {matchResult.participants[0].stats.win ? "승리" : "패배"}
+          </Text>
+          <Text size="small">
+            {startTime.getFullYear().toString().slice(-4)}년{" "}
+            {startTime.getMonth() + 1}월 {startTime.getDate()}일
+          </Text>
+        </div>
+
+        {/* 개인 게임 정보 */}
         <ComponentWrap
           style={{
-            marginBottom: "10px",
+            flexDirection: "column",
+            width: "240px",
           }}
         >
-          <Champimg>
-            <Img
-              src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
-                champId[matchResult.participants[0].championId]
-              }.png`}
-            />
-          </Champimg>
           <ComponentWrap
             style={{
-              flexDirection: "column",
-              justifyContent: "center",
-              paddingLeft: "5px",
+              marginBottom: "10px",
             }}
           >
-            <Box size="small">
+            {/* 챔프 이미지 */}
+            <Champimg>
               <Img
-                src={`https://ddragon.leagueoflegends.com/cdn/13.8.1/img/spell/${
-                  summoner.spell[matchResult.participants[0].spell1Id]
+                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                  champId[matchResult.participants[0].championId]
                 }.png`}
               />
-            </Box>
-            <Box size="small">
-              <Img
-                src={`https://ddragon.leagueoflegends.com/cdn/13.8.1/img/spell/${
-                  summoner.spell[matchResult.participants[0].spell2Id]
-                }.png`}
-              />
-            </Box>
-          </ComponentWrap>
-          <ComponentWrap
-            style={{
-              justifyContent: "center",
-            }}
-          >
+              <Text>18</Text>
+            </Champimg>
+            {/* 룬 정보 */}
             <ComponentWrap
               style={{
                 flexDirection: "column",
                 justifyContent: "center",
-                alignItems: "center",
-                marginLeft: "5px",
+                paddingLeft: "5px",
               }}
             >
-              <Text size="medium">
-                {matchResult.participants[0].stats.kills} /{" "}
-                {matchResult.participants[0].stats.deaths} /{" "}
-                {matchResult.participants[0].stats.assists}
-              </Text>
-              <Text size="medium">
-                KDA{" "}
-                {Math.round(
-                  ((matchResult.participants[0].stats.kills +
-                    matchResult.participants[0].stats.assists) /
-                    matchResult.participants[0].stats.deaths) *
-                    10
-                ) / 10}
-              </Text>
+              <Box size="small">
+                <Img
+                  src={`https://ddragon.leagueoflegends.com/cdn/13.8.1/img/spell/${
+                    summoner.spell[matchResult.participants[0].spell1Id]
+                  }.png`}
+                />
+              </Box>
+              <Box size="small">
+                <Img
+                  src={`https://ddragon.leagueoflegends.com/cdn/13.8.1/img/spell/${
+                    summoner.spell[matchResult.participants[0].spell2Id]
+                  }.png`}
+                />
+              </Box>
+            </ComponentWrap>
+
+            {/* KDA */}
+            <ComponentWrap
+              style={{
+                justifyContent: "center",
+              }}
+            >
+              <ComponentWrap
+                style={{
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginLeft: "5px",
+                }}
+              >
+                <Text size="medium">
+                  {matchResult.participants[0].stats.kills} /{" "}
+                  {matchResult.participants[0].stats.deaths} /{" "}
+                  {matchResult.participants[0].stats.assists}
+                </Text>
+                <Text size="medium">
+                  KDA{" "}
+                  {Math.round(
+                    ((matchResult.participants[0].stats.kills +
+                      matchResult.participants[0].stats.assists) /
+                      matchResult.participants[0].stats.deaths) *
+                      10
+                  ) / 10}
+                </Text>
+              </ComponentWrap>
             </ComponentWrap>
           </ComponentWrap>
+
+          {/* 아이템 정보 */}
+          <div
+            style={{
+              display: "flex",
+            }}
+          >
+            {itemBox(matchResult)}
+          </div>
         </ComponentWrap>
-        <div
+
+        {/* 추가정보 */}
+        <ComponentWrap
           style={{
+            flexDirection: "column",
+            width: "155px",
+          }}
+        >
+          <Text
+            size="medium"
+            style={{
+              textAlign: "center",
+            }}
+          >
+            CS {matchResult.participants[0].stats.totalMinionsKilled}
+          </Text>
+        </ComponentWrap>
+
+        {/* 모든플레이어 정보 */}
+        <ComponentWrap
+          style={{
+            width: "350px",
+          }}
+        >
+          {/* 팀 1 */}
+          <ComponentWrap
+            style={{
+              flexDirection: "column",
+              marginLeft: "20px",
+              marginRight: "20px",
+            }}
+          >
+            {playerBox(detail, 0)}
+          </ComponentWrap>
+
+          {/* 팀 2 */}
+          <ComponentWrap
+            style={{
+              flexDirection: "column",
+              marginLeft: "20px",
+              marginRight: "20px",
+            }}
+          >
+            {playerBox(detail, 5)}
+          </ComponentWrap>
+        </ComponentWrap>
+
+        {/* 경기 상세 정보 */}
+        <MoreInfo
+          style={{
+            position: "relative",
             display: "flex",
-          }}
-        >
-          {itemBox(matchResult)}
-        </div>
-      </ComponentWrap>
-
-      <ComponentWrap
-        style={{
-          flexDirection: "column",
-          width: "155px",
-        }}
-      >
-        <Text
-          size="medium"
-          style={{
-            textAlign: "center",
-          }}
-        >
-          CS {matchResult.participants[0].stats.totalMinionsKilled}
-        </Text>
-      </ComponentWrap>
-
-      <ComponentWrap
-        style={{
-          width: "350px",
-        }}
-      >
-        <ComponentWrap
-          style={{
             flexDirection: "column",
-            marginLeft: "20px",
-            marginRight: "20px",
           }}
+          onClick={() => dropDownDetail(matchResult.gameId)}
         >
-          {playerBox(detail, 0)}
-        </ComponentWrap>
-
-        {/* 상대팀 */}
-
-        <ComponentWrap
-          style={{
-            flexDirection: "column",
-            marginLeft: "20px",
-            marginRight: "20px",
-          }}
-        >
-          {playerBox(detail, 5)}
-        </ComponentWrap>
-      </ComponentWrap>
-      <MoreInfo />
+          MORE
+        </MoreInfo>
+      </MatchWrap>
+      {dropdownVisibility ? (
+        <MatchDetail gameId={matchResult.gameId} />
+      ) : undefined}
     </Wrap>
   );
 };

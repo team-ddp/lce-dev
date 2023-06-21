@@ -158,13 +158,13 @@ const Sidenav = () => {
       <Items onClick={count.toggle ? onClick : undefined}>
         <Item>
           <PersonSearchOutlinedIcon />
-          test
+          20게임 매치리스트
         </Item>
       </Items>
       <Items onClick={count.toggle ? test : undefined}>
         <Item>
           <PersonSearchOutlinedIcon />
-          test
+          개별 게임데이터불러오기
         </Item>
       </Items>
     </Nav>

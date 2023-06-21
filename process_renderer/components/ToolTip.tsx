@@ -35,7 +35,7 @@ const ToolTipWrap = styled.div`
   background-color: rgb(0, 0, 0, 0.9);
   position: absolute;
   bottom: 130%;
-  /* left: -50%; */
+  left: -348px;
   width: max-content;
   max-width: 348px;
   display: flex;
@@ -43,6 +43,7 @@ const ToolTipWrap = styled.div`
   padding: 10px;
   display: none;
   border-radius: 8px;
+  z-index: 1000;
   ${(props: HoverProps) =>
     props.hover &&
     css`
@@ -65,6 +66,7 @@ const Stats = styled.span`
 const itemDes = (data: string[]) => {
   return data.map((el: string) => {
     return (
+      // <Text>{el}</Text>
       <Text
         dangerouslySetInnerHTML={{
           __html: el,
@@ -83,15 +85,15 @@ const ToolTip = ({ children, itemCode, isHover }: itemId) => {
     <Wrap>
       {children}
       <ToolTipWrap hover={isHover}>
-        <Text>{itemJson.data[itemCode].name}</Text>
+        <Text style={{ color: "gold" }}>{itemJson.data[itemCode].name}</Text>
         <br />
         <br />
         {itemDes(des)}
-        {/* <Text
-          dangerouslySetInnerHTML={{
-            __html: des.map((el) => {}),
-          }}
-        /> */}
+        <br />
+        <br />
+        <Text style={{ color: "gold" }}>
+          {itemJson.data[itemCode].gold.total}골드
+        </Text>
         <Arrow />
       </ToolTipWrap>
     </Wrap>

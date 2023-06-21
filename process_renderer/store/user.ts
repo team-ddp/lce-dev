@@ -1,36 +1,13 @@
 import { userInfo_type, userInfo_type_class } from "../types/user";
 import { createSlice } from "@reduxjs/toolkit";
 
-// 액션 타입 생성
-// const SET_USER = "user/SET_USER";
-// const GET_RECENT_MATCHLIST = "user/GET_RECENT_MATCHLIST";
-
-// 액션 생성 함수
-// export const setUser = createAction(SET_USER, (userInfo) => userInfo);
-
-// type userInfoAction = ReturnType<typeof setUser>;
-
-// 리듀서
-
-// export default createReducer(initialState, {
-//   [setUser]: (state, {payload: userInfo}) =>{
-//     return
-//   }
-// })
-
-// export default function user(state: userInfo_type, action: userInfoAction) {
-//   switch (action.type) {
-//     case SET_USER:
-//       return action.payload;
-//   }
-// }
-
 const initialState = {
   toggle: false,
   userInfo: {},
   rank: {},
   recentMatchList: {},
   getMatchInfo: [],
+  getMatchDetail: [],
 };
 
 const userSlice = createSlice({
@@ -52,6 +29,9 @@ const userSlice = createSlice({
     getMatchInfo: (state, action) => {
       state.getMatchInfo = action.payload;
     },
+    getMatchDetail: (state, action) => {
+      state.getMatchDetail = action.payload;
+    },
   },
 });
 
@@ -61,5 +41,6 @@ export const {
   setStatus,
   getRecentMatchList,
   getMatchInfo,
+  getMatchDetail,
 } = userSlice.actions;
 export default userSlice.reducer;

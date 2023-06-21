@@ -11,7 +11,7 @@
   "build": {
     "productName": "CGSP",
     "appId": "CGSP",
-    "asar": false,
+    "asar": true,
     "win": {
       "target": [
         {

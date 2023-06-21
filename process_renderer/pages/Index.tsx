@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import { Route, BrowserRouter, Routes, useNavigate } from "react-router-dom";
+import { Route, HashRouter, Routes, useNavigate } from "react-router-dom";
 
 import Titlebar from "../components/Titlebar";
 import Sidenav from "../components/Sidenav";
@@ -47,7 +47,7 @@ const index = () => {
 
   return (
     <React.StrictMode>
-      <BrowserRouter>
+      <HashRouter>
         <Grid>
           <Title>
             <Titlebar />
@@ -62,7 +62,7 @@ const index = () => {
             </Routes>
           </Page>
         </Grid>
-      </BrowserRouter>
+      </HashRouter>
     </React.StrictMode>
   );
 };

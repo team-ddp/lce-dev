@@ -123,6 +123,14 @@ app.on("ready", async () => {
     mainWindow.close();
   });
 
+  ipcMain.handle("getMatchDetail", async (event, data) => {
+    console.log(`1 Received [${data}] from renderer browser`);
+    const ee: any = await getData("getMatchInfo", data);
+    console.log("eeeeeeeeeeeeeaef");
+    return ee;
+    // event.sender.send("giveMathchDetail", ee);
+  });
+
   ipcMain.handle("fromTest", async (event, data) => {
     console.log(`1 Received [${data}] from renderer browser`);
     // console.log(test());
@@ -136,16 +144,20 @@ app.on("ready", async () => {
 
   ipcMain.handle("getMatchInfo", async (event, data) => {
     console.log(`1 Received [${data}] from renderer browser`);
-    for (let i = 0; i < data.length; i++) {
-      let matchData = await getData("getMatchList");
-      fs.writeFile(
-        `${data[i].gameId}.json`,
-        JSON.stringify(matchData),
-        function () {
-          console.log("json파일 생성완료");
-        }
-      );
-    }
+    let matchData = await getData("getMatchInfo");
+    fs.writeFile("recentgame.json", JSON.stringify(matchData), function () {
+      console.log("json파일 생성완료");
+    });
+    // for (let i = 0; i < data.length; i++) {
+    //   let matchData = await getData("getMatchList");
+    //   fs.writeFile(
+    //     `${data[i].gameId}.json`,
+    //     JSON.stringify(matchData),
+    //     function () {
+    //       console.log("json파일 생성완료");
+    //     }
+    //   );
+    // }
   });
 
   ipcMain.handle("saveFile", async (event, data) => {
