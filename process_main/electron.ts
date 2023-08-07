@@ -16,16 +16,17 @@ import { authenticate, Credentials } from "league-connect";
 import LcuApi from "./apis/lcu";
 import { app, BrowserWindow, ipcMain } from "electron";
 import fs from "fs";
-
-import {
-  setDefaultInfo,
-  setRankInfo,
-  setStatus,
-} from "../process_renderer/store/user";
-import { RootState } from "../process_renderer/store";
-import { object } from "prop-types";
+// import installExtension, {
+//   REACT_DEVELOPER_TOOLS,
+// } from "electron-devtools-installer";
 
 console.log("init");
+
+// app.whenReady().then(() => {
+//   installExtension(REACT_DEVELOPER_TOOLS)
+//     .then((name: any) => console.log(`add Extension : ${name}`))
+//     .catch((err) => console.log("error occurred: ", err));
+// });
 
 app.disableHardwareAcceleration();
 let mainWindow: BrowserWindow;
@@ -48,11 +49,15 @@ const createWindow = () => {
     // transparent: true,
     webPreferences: {
       // enableRemoteModule: true,
+      devTools: true,
       nodeIntegration: false,
       contextIsolation: true,
       preload: preloadEntry,
     },
   });
+  // installExtension(REACT_DEVELOPER_TOOLS)
+  //   .then((name: any) => console.log(`add Extension : ${name}`))
+  //   .catch((err) => console.log("error occurred: ", err));
   process.env.REACT_APP_ENV === "development"
     ? mainWindow.loadURL("http://localhost:4173")
     : mainWindow.loadFile(rendererEntry);
@@ -144,7 +149,7 @@ app.on("ready", async () => {
 
   ipcMain.handle("getMatchInfo", async (event, data) => {
     console.log(`1 Received [${data}] from renderer browser`);
-    let matchData = await getData("getMatchInfo");
+    let matchData = await getData("getMatchInfo", data);
     fs.writeFile("recentgame.json", JSON.stringify(matchData), function () {
       console.log("json파일 생성완료");
     });

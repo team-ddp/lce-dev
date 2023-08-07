@@ -1,4 +1,4 @@
-import React, { Children } from "react";
+import React, { Children, useState } from "react";
 import styled, { css } from "styled-components";
 import spellJson from "../assets/spell.json";
 import idtoChamp from "../assets/idToChamp.json";
@@ -149,32 +149,46 @@ const itemBox = (data: any) => {
   const matchData = [];
   for (let i = 0; i < 7; i++) {
     let isHover = true;
-    if (data.participants[0].stats[`item${i}`] == 0) {
+
+    if (data.participants[0].stats[`item${i}`] === 0) {
       isHover = false;
     }
-    matchData.push(
-      <div
-        style={{
-          position: "relative",
-        }}
-      >
-        <ToolTip
-          itemCode={data.participants[0].stats[`item${i}`]}
-          isHover={isHover}
-          key={data.participants[0].stats[`item${i}`]}
-        >
-          <Box size="medium">
-            <Img
-              src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/item/${
-                data.participants[0].stats[`item${i}`]
-              }.png`}
-              onError={(event) => (event.currentTarget.style.display = "none")}
-              key={data.participants[0].stats[`item${i}`]}
-            />
-          </Box>
-        </ToolTip>
-      </div>
-    );
+    isHover
+      ? matchData.push(
+          <div
+            style={{
+              position: "relative",
+            }}
+            key={data.participants[0].stats[`item${i}`]}
+          >
+            <ToolTip
+              itemCode={data.participants[0].stats[`item${i}`]}
+              isHover={isHover}
+              direction="false"
+            >
+              <Box size="medium">
+                <Img
+                  src={`http://ddragon.leagueoflegends.com/cdn/${
+                    import.meta.env.VITE_APP_LOL_VERSION
+                  }/img/item/${data.participants[0].stats[`item${i}`]}.png`}
+                  onError={(event) =>
+                    (event.currentTarget.style.display = "none")
+                  }
+                />
+              </Box>
+            </ToolTip>
+          </div>
+        )
+      : matchData.push(
+          <div
+            style={{
+              position: "relative",
+            }}
+            key={data.participants[0].stats[`item${i}`]}
+          >
+            <Box size="medium"></Box>
+          </div>
+        );
   }
   return matchData;
 };
@@ -187,6 +201,7 @@ const playerBox = (data: any, num: number) => {
         style={{
           position: "relative",
         }}
+        key={data.participantIdentities[i].player.summonerName}
       >
         <ComponentWrap>
           <Champimg
@@ -197,9 +212,9 @@ const playerBox = (data: any, num: number) => {
             }}
           >
             <Img
-              src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
-                champId[data.participants[i].championId]
-              }.png`}
+              src={`http://ddragon.leagueoflegends.com/cdn/${
+                import.meta.env.VITE_APP_LOL_VERSION
+              }/img/champion/${champId[data.participants[i].championId]}.png`}
             />
           </Champimg>
           <Text size="small">
@@ -215,10 +230,10 @@ const summoner = JSON.parse(JSON.stringify(spellJson));
 const champId = JSON.parse(JSON.stringify(idtoChamp));
 const matchType = JSON.parse(JSON.stringify(gameType));
 const Match = ({ matchResult, num }: MatchProps) => {
-  const [dropdownVisibility, setDropdownVisibility] = React.useState(false);
+  const [dropdownVisibility, setDropdownVisibility] = useState(false);
   const startTime = new Date(matchResult.gameCreation);
-  const durationTime = matchResult.gameDuration;
-  const dispatch = useDispatch();
+  // const durationTime = matchResult.gameDuration;
+  // const dispatch = useDispatch();
 
   const dropDownDetail = (gameId: any) => {
     setDropdownVisibility(!dropdownVisibility);
@@ -228,7 +243,7 @@ const Match = ({ matchResult, num }: MatchProps) => {
       //   dispatch(getMatchDetail(data));
       // });
       console.log(dropdownVisibility);
-      window.api.removeAllListeners("getMatchDetail");
+      // window.api.removeAllListeners("getMatchDetail");
     }
   };
   return (
@@ -297,7 +312,9 @@ const Match = ({ matchResult, num }: MatchProps) => {
             {/* 챔프 이미지 */}
             <Champimg>
               <Img
-                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                src={`http://ddragon.leagueoflegends.com/cdn/${
+                  import.meta.env.VITE_APP_LOL_VERSION
+                }/img/champion/${
                   champId[matchResult.participants[0].championId]
                 }.png`}
               />
@@ -313,14 +330,18 @@ const Match = ({ matchResult, num }: MatchProps) => {
             >
               <Box size="small">
                 <Img
-                  src={`https://ddragon.leagueoflegends.com/cdn/13.8.1/img/spell/${
+                  src={`https://ddragon.leagueoflegends.com/cdn/${
+                    import.meta.env.VITE_APP_LOL_VERSION
+                  }/img/spell/${
                     summoner.spell[matchResult.participants[0].spell1Id]
                   }.png`}
                 />
               </Box>
               <Box size="small">
                 <Img
-                  src={`https://ddragon.leagueoflegends.com/cdn/13.8.1/img/spell/${
+                  src={`https://ddragon.leagueoflegends.com/cdn/${
+                    import.meta.env.VITE_APP_LOL_VERSION
+                  }/img/spell/${
                     summoner.spell[matchResult.participants[0].spell2Id]
                   }.png`}
                 />

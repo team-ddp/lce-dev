@@ -15,6 +15,8 @@
     "32": "SummonerSnowball",
     "55": "Summoner_UltBookSmitePlaceholder",
     "39": "SummonerSnowURFSnowball_Mark",
-    "54": "Summoner_UltBookPlaceholder"
+    "54": "Summoner_UltBookPlaceholder",
+    "2201": "SummonerCherryHold",
+    "2202": "SummonerCherryFlash"
   }
 }

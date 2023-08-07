@@ -15,7 +15,8 @@
     "isolatedModules": true,
     "strictPropertyInitialization": false,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["vite/client"]
   },
   "include": ["process_renderer", "process_main"],
   "references": [{ "path": "./tsconfig.node.json" }]

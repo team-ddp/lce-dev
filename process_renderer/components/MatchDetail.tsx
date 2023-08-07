@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import idtoChamp from "../assets/idToChamp.json";
 import spellJson from "../assets/spell.json";
@@ -126,32 +126,45 @@ const itemBox = (data: any, num: any) => {
   const matchData = [];
   for (let i = 0; i < 7; i++) {
     let isHover = true;
-    if (data.participants[num].stats[`item${i}`] == 0) {
+    if (data.participants[num].stats[`item${i}`] === 0) {
       isHover = false;
     }
-    matchData.push(
-      <div
-        style={{
-          position: "relative",
-        }}
-      >
-        <ToolTip
-          itemCode={data.participants[num].stats[`item${i}`]}
-          isHover={isHover}
-          key={data.participants[num].stats[`item${i}`]}
-        >
-          <Box size="small">
-            <Img
-              src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/item/${
-                data.participants[num].stats[`item${i}`]
-              }.png`}
-              onError={(event) => (event.currentTarget.style.display = "none")}
-              key={data.participants[num].stats[`item${i}`]}
-            />
-          </Box>
-        </ToolTip>
-      </div>
-    );
+    isHover
+      ? matchData.push(
+          <div
+            style={{
+              position: "relative",
+            }}
+            key={data.participants[0].stats[`item${i}`]}
+          >
+            <ToolTip
+              itemCode={data.participants[num].stats[`item${i}`]}
+              isHover={isHover}
+              direction="true"
+            >
+              <Box size="small">
+                <Img
+                  src={`http://ddragon.leagueoflegends.com/cdn/${
+                    import.meta.env.VITE_APP_LOL_VERSION
+                  }/img/item/${data.participants[num].stats[`item${i}`]}.png`}
+                  onError={(event) =>
+                    (event.currentTarget.style.display = "none")
+                  }
+                />
+              </Box>
+            </ToolTip>
+          </div>
+        )
+      : matchData.push(
+          <div
+            style={{
+              position: "relative",
+            }}
+            key={data.participants[0].stats[`item${i}`]}
+          >
+            <Box size="small"></Box>
+          </div>
+        );
   }
   return matchData;
 };
@@ -160,12 +173,16 @@ const playerInfo = (matchResult: any, num: number) => {
   const matchData = [];
   for (let i = num; i < 5 + num; i++) {
     matchData.push(
-      <TeamMateBox>
-        <GridContainerWrap>
-          <ComponentWrap>
+      <TeamMateBox key={matchResult.participantIdentities[i].summonerId}>
+        <GridContainerWrap
+          key={matchResult.participantIdentities[i].summonerId}
+        >
+          <ComponentWrap key={matchResult.participantIdentities[i].summonerId}>
             <Champimg>
               <Img
-                src={`http://ddragon.leagueoflegends.com/cdn/13.8.1/img/champion/${
+                src={`http://ddragon.leagueoflegends.com/cdn/${
+                  import.meta.env.VITE_APP_LOL_VERSION
+                }/img/champion/${
                   champId[matchResult.participants[i].championId]
                 }.png`}
               />
@@ -181,14 +198,18 @@ const playerInfo = (matchResult: any, num: number) => {
             >
               <Box size="small">
                 <Img
-                  src={`https://ddragon.leagueoflegends.com/cdn/13.8.1/img/spell/${
+                  src={`https://ddragon.leagueoflegends.com/cdn/${
+                    import.meta.env.VITE_APP_LOL_VERSION
+                  }/img/spell/${
                     summoner.spell[matchResult.participants[i].spell1Id]
                   }.png`}
                 />
               </Box>
               <Box size="small">
                 <Img
-                  src={`https://ddragon.leagueoflegends.com/cdn/13.8.1/img/spell/${
+                  src={`https://ddragon.leagueoflegends.com/cdn/${
+                    import.meta.env.VITE_APP_LOL_VERSION
+                  }/img/spell/${
                     summoner.spell[matchResult.participants[i].spell2Id]
                   }.png`}
                 />
@@ -240,16 +261,30 @@ const playerInfo = (matchResult: any, num: number) => {
 };
 
 const MatchDetail = ({ gameId }: any) => {
-  const [matchResultState, setMatchResultState] = React.useState("");
-  const [showMatchResultState, setShowMatchResultState] = React.useState(false);
-  const detail = (gameId: any) => {
+  const [matchResultState, setMatchResultState] = useState("");
+  const [showMatchResultState, setShowMatchResultState] = useState(false);
+  if (gameId === 6626141891) {
+    console.log("버그확인");
+  }
+  useEffect(() => {
+    console.log("중복확인");
     window.api.invoke("getMatchDetail", gameId).then((data: any) => {
       console.log("asdfasdfasdf");
       setMatchResultState(data);
       setShowMatchResultState(true);
     });
-    return showMatchResultState;
-  };
+  }, []);
+  console.log(matchResultState);
+  console.log(showMatchResultState);
+  // const detail = (gameId: any) => {
+  //   console.log("중복확인");
+  //   window.api.invoke("getMatchDetail", gameId).then((data: any) => {
+  //     console.log("asdfasdfasdf");
+  //     setMatchResultState(data);
+  //     setShowMatchResultState(true);
+  //   });
+  //   return showMatchResultState;
+  // };
   return (
     <Wrap>
       <OverallBox></OverallBox>
@@ -266,9 +301,8 @@ const MatchDetail = ({ gameId }: any) => {
             <Text>아이템</Text>
           </GridContainerWrap>
         </OverallInfoWrap>
-        {showMatchResultState
-          ? playerInfo(matchResultState, 0)
-          : detail(gameId)}
+        {showMatchResultState ? playerInfo(matchResultState, 0) : ""}
+        {/* {playerInfo(matchResultState, 0)} */}
       </TeamOverallBox>
       <TeamOverallBox>
         <OverallInfoWrap>
@@ -283,9 +317,8 @@ const MatchDetail = ({ gameId }: any) => {
             <Text>아이템</Text>
           </GridContainerWrap>
         </OverallInfoWrap>
-        {showMatchResultState
-          ? playerInfo(matchResultState, 5)
-          : detail(gameId)}
+        {/* {playerInfo(matchResultState, 5)} */}
+        {showMatchResultState ? playerInfo(matchResultState, 4) : ""}
       </TeamOverallBox>
     </Wrap>
   );

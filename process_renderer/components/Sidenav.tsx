@@ -90,7 +90,7 @@ const Sidenav = () => {
     console.log("render to send");
   };
 
-  // 챔프 id를 이름으로
+  // // 챔프 id를 이름으로
   // const changeChampId = () => {
   //   let champions = new Array();
   //   let key = new Array();
@@ -109,9 +109,11 @@ const Sidenav = () => {
 
   //   window.api.invoke("saveFile", ids);
   // };
+  // changeChampId();
 
   const test = () => {
-    const data = count.recentMatchList.games.games;
+    // const data = count.recentMatchList.games.games;
+    const data = "6626141891";
     window.api.invoke("getMatchInfo", data);
   };
 

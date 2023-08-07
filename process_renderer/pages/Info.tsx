@@ -105,8 +105,8 @@ const Info = () => {
   const matchHistory = user.recentMatchList.games.games.map(
     (matchResult: any, num: number) => {
       return (
-        <div>
-          <Match matchResult={matchResult} num={num} key={matchResult.gameId} />
+        <div key={matchResult.gameId}>
+          <Match matchResult={matchResult} num={num} />
         </div>
       );
     }
@@ -118,7 +118,9 @@ const Info = () => {
         <Wrap>
           <UserSection>
             <Icons
-              src={`https://ddragon.leagueoflegends.com/cdn/13.8.1/img/profileicon/${userInfo.profileIconId}.png`}
+              src={`https://ddragon.leagueoflegends.com/cdn/${
+                import.meta.env.VITE_APP_LOL_VERSION
+              }/img/profileicon/${userInfo.profileIconId}.png`}
               size="small"
             />
             <div
