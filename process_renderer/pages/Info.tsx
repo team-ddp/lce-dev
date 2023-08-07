@@ -29,7 +29,6 @@ const Container = styled.div`
   width: inherit;
   box-sizing: border-box;
   display: flex;
-  background-color: black;
   justify-content: center;
   align-items: center;
   height: 100%;
@@ -40,7 +39,6 @@ const Page = styled.div`
   height: inherit;
   box-sizing: border-box;
   display: flex;
-  /* background-color: black; */
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -55,7 +53,8 @@ const UserSection = styled.section`
   box-sizing: border-box;
   justify-content: center;
   align-items: center;
-  background-color: greenyellow;
+  background-color: rgba(113, 113, 142, 0.1);
+  border-bottom: 2px solid rgba(113, 113, 142, 0.1);
   width: 100%;
   height: 250px;
 `;
@@ -70,10 +69,7 @@ const MoreInfo = styled.section`
 const MathList = styled.section`
   display: flex;
   box-sizing: border-box;
-  /* background-color: orange; */
   flex-direction: column;
-  /* width: 100%; */
-  /* height: 100%; */
 `;
 const Text = styled.span`
   font-weight: 700;
@@ -104,11 +100,13 @@ const Info = () => {
 
   const matchHistory = user.recentMatchList.games.games.map(
     (matchResult: any, num: number) => {
-      return (
-        <div key={matchResult.gameId}>
-          <Match matchResult={matchResult} num={num} />
-        </div>
-      );
+      if (matchResult.queueId !== 1700) {
+        return (
+          <div key={matchResult.gameId}>
+            <Match matchResult={matchResult} num={num} />
+          </div>
+        );
+      }
     }
   );
 
@@ -166,7 +164,10 @@ const Info = () => {
                   textAlign: "center",
                 }}
               >
-                승률 {(rankSolo.wins / (rankSolo.wins + rankSolo.losses)) * 100}
+                승률{" "}
+                {Math.round(
+                  (rankSolo.wins / (rankSolo.wins + rankSolo.losses)) * 100
+                )}
                 %
               </Text>
             </div>
@@ -203,7 +204,7 @@ const Info = () => {
                 }}
               >
                 승률{" "}
-                {Math.floor(
+                {Math.round(
                   (rankFlex.wins / (rankFlex.wins + rankFlex.losses)) * 100
                 )}
                 %

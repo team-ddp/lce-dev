@@ -6,15 +6,15 @@ interface itemId {
   itemCode: any;
   children: React.ReactNode;
   isHover: boolean;
-  direction: any;
+  direction?: string;
 }
 
 interface HoverProps extends React.ComponentProps<"div"> {
   hover: boolean;
-  direction: boolean;
+  direction?: string;
 }
 interface ArrowProps extends React.ComponentProps<"div"> {
-  direction: boolean;
+  direction?: string;
 }
 
 const Wrap = styled.div`

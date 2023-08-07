@@ -164,7 +164,6 @@ const itemBox = (data: any) => {
             <ToolTip
               itemCode={data.participants[0].stats[`item${i}`]}
               isHover={isHover}
-              direction="false"
             >
               <Box size="medium">
                 <Img
@@ -359,10 +358,16 @@ const Match = ({ matchResult, num }: MatchProps) => {
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
-                  marginLeft: "5px",
+                  paddingLeft: "10px",
                 }}
               >
-                <Text size="medium">
+                <Text
+                  size="medium"
+                  style={{
+                    width: "95px",
+                    textAlign: "center",
+                  }}
+                >
                   {matchResult.participants[0].stats.kills} /{" "}
                   {matchResult.participants[0].stats.deaths} /{" "}
                   {matchResult.participants[0].stats.assists}

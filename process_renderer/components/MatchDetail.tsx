@@ -12,6 +12,10 @@ interface BoxProps extends React.ComponentProps<"div"> {
   color?: string;
   size?: string;
 }
+
+interface TeamMateColor extends React.ComponentProps<"div"> {
+  team?: string;
+}
 interface BoxSizeProps {
   [index: string]: {
     height: string;
@@ -59,7 +63,7 @@ const TeamOverallBox = styled.div`
   height: 225px;
   border-radius: 10px;
   margin-bottom: 20px;
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.9);
   margin-top: 10px;
 `;
 
@@ -78,6 +82,11 @@ const TeamMateBox = styled.div`
   align-items: center;
   height: 40px;
   background-color: rgba(12, 28, 61, 0.6);
+  ${(props: TeamMateColor) =>
+    props.team &&
+    css`
+      background-color: rgba(198, 93, 92, 0.3);
+    `}
 `;
 const GridContainerWrap = styled.div`
   display: grid;
@@ -135,7 +144,7 @@ const itemBox = (data: any, num: any) => {
             style={{
               position: "relative",
             }}
-            key={data.participants[0].stats[`item${i}`]}
+            key={data.participantIdentities[i].player.summonerId}
           >
             <ToolTip
               itemCode={data.participants[num].stats[`item${i}`]}
@@ -160,7 +169,7 @@ const itemBox = (data: any, num: any) => {
             style={{
               position: "relative",
             }}
-            key={data.participants[0].stats[`item${i}`]}
+            key={data.participantIdentities[i].player.summonerId}
           >
             <Box size="small"></Box>
           </div>
@@ -173,11 +182,12 @@ const playerInfo = (matchResult: any, num: number) => {
   const matchData = [];
   for (let i = num; i < 5 + num; i++) {
     matchData.push(
-      <TeamMateBox key={matchResult.participantIdentities[i].summonerId}>
-        <GridContainerWrap
-          key={matchResult.participantIdentities[i].summonerId}
-        >
-          <ComponentWrap key={matchResult.participantIdentities[i].summonerId}>
+      <TeamMateBox
+        key={matchResult.participantIdentities[i].player.summonerId}
+        team={matchResult.participants[i].teamId === 200 ? "red" : ""}
+      >
+        <GridContainerWrap>
+          <ComponentWrap>
             <Champimg>
               <Img
                 src={`http://ddragon.leagueoflegends.com/cdn/${
@@ -232,12 +242,18 @@ const playerInfo = (matchResult: any, num: number) => {
           {/* 가한 피해량 */}
           <ComponentWrap>
             <Text>
-              {matchResult.participants[i].stats.totalDamageDealtToChampions}
+              {matchResult.participants[
+                i
+              ].stats.totalDamageDealtToChampions.toLocaleString("ko-KR")}
             </Text>
           </ComponentWrap>
           {/* 입은 피해량 */}
           <ComponentWrap>
-            <Text>{matchResult.participants[i].stats.totalDamageTaken}</Text>
+            <Text>
+              {matchResult.participants[
+                i
+              ].stats.totalDamageTaken.toLocaleString("ko-KR")}
+            </Text>
           </ComponentWrap>
           {/* 와드 */}
           <ComponentWrap>
@@ -318,7 +334,7 @@ const MatchDetail = ({ gameId }: any) => {
           </GridContainerWrap>
         </OverallInfoWrap>
         {/* {playerInfo(matchResultState, 5)} */}
-        {showMatchResultState ? playerInfo(matchResultState, 4) : ""}
+        {showMatchResultState ? playerInfo(matchResultState, 5) : ""}
       </TeamOverallBox>
     </Wrap>
   );

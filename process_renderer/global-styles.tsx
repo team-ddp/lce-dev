@@ -7,7 +7,7 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
     height: 100%;
     background-color: #1a1a1a;
-    opacity: 87%;
+    opacity: 89%;
     /* background-color: rgb 0 0 0; */
     /* opacity: 60%; */
   }

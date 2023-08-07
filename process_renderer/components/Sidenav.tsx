@@ -20,7 +20,6 @@ import {
 
 import champ from "../assets/champion.json";
 import { RootState } from "../store";
-import { fstat } from "original-fs";
 
 // let if_userInfo = interface_userInfo;
 
@@ -50,7 +49,7 @@ const Item = styled.span`
   line-height: 70px;
 `;
 const Sidenav = () => {
-  const [clientConnect, setclientConnect] = useState(false);
+  const [clientConnect, setclientConnect] = useState(true);
   const count: any = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
@@ -113,7 +112,7 @@ const Sidenav = () => {
 
   const test = () => {
     // const data = count.recentMatchList.games.games;
-    const data = "6626141891";
+    const data = "6529986300";
     window.api.invoke("getMatchInfo", data);
   };
 
