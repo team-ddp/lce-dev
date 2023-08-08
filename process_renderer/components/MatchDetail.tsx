@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import idtoChamp from "../assets/idToChamp.json";
 import spellJson from "../assets/spell.json";
 import { getMatchDetail } from "../store/user";
@@ -43,16 +43,16 @@ const BoxSizeStyles = css`
     width: ${props.size && boxSizes[props.size].width};
   `}
 `;
+
 const Wrap = styled.div`
   width: 920px;
-  height: 800px;
+  height: 600px;
   margin-top: 20px;
   background-color: #2a2a2d;
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
-
 const OverallBox = styled.div`
   width: 900px;
   height: 40px;
@@ -317,7 +317,7 @@ const MatchDetail = ({ gameId }: any) => {
             <Text>아이템</Text>
           </GridContainerWrap>
         </OverallInfoWrap>
-        {showMatchResultState ? playerInfo(matchResultState, 0) : ""}
+        {showMatchResultState && playerInfo(matchResultState, 0)}
         {/* {playerInfo(matchResultState, 0)} */}
       </TeamOverallBox>
       <TeamOverallBox>
@@ -334,7 +334,7 @@ const MatchDetail = ({ gameId }: any) => {
           </GridContainerWrap>
         </OverallInfoWrap>
         {/* {playerInfo(matchResultState, 5)} */}
-        {showMatchResultState ? playerInfo(matchResultState, 5) : ""}
+        {showMatchResultState && playerInfo(matchResultState, 5)}
       </TeamOverallBox>
     </Wrap>
   );

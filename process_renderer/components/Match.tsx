@@ -1,11 +1,13 @@
 import React, { Children, useState } from "react";
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import spellJson from "../assets/spell.json";
 import idtoChamp from "../assets/idToChamp.json";
 import gameType from "../assets/matchType.json";
 import ToolTip from "./ToolTip";
 import detail from "../assets/matchInfo/6488380954.json";
 import MatchDetail from "./MatchDetail";
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import { useDispatch, useSelector } from "react-redux";
 import { getMatchDetail } from "../store/user";
 // import matchJson from "../assets/matchInfo"
@@ -145,6 +147,57 @@ const MoreInfo = styled.button`
   border-bottom-right-radius: 10px;
 `;
 
+const MatchDetailWrap = styled.div<{ showMatchResultState: boolean }>`
+  ${(props) => wrapSlide(props.showMatchResultState)}
+`;
+const wrapSlide = (showMatchResultState: boolean) => css`
+  animation: ${showMatchResultState ? slideUp : slideDown} 0.6s linear;
+`;
+const slideDown = keyframes`
+0%{
+  opacity: 0;
+  height: 0px;
+}
+25%{
+  opacity: 0.25;
+  height: 100px;
+}
+50%{
+  opacity: 0.5;
+  height: 300px;
+}
+70%{
+  opacity: 0.75;
+  height: 500px;
+}
+100%{
+  opacity: 1;
+  height: 600px;
+}
+`;
+const slideUp = keyframes`
+0%{
+  opacity: 1;
+  height: 600px;
+}
+25%{
+  opacity: 0.75;
+  height: 500px;
+}
+50%{
+  opacity: 0.5;
+  height: 300px;
+}
+70%{
+  opacity: 0.25;
+  height: 100px;
+}
+100%{
+  opacity: 0;
+  height: 0px;
+}
+`;
+
 const itemBox = (data: any) => {
   const matchData = [];
   for (let i = 0; i < 7; i++) {
@@ -244,6 +297,7 @@ const Match = ({ matchResult, num }: MatchProps) => {
       console.log(dropdownVisibility);
       // window.api.removeAllListeners("getMatchDetail");
     }
+    console.log("드롭다운 " + dropdownVisibility);
   };
   return (
     <Wrap>
@@ -446,16 +500,23 @@ const Match = ({ matchResult, num }: MatchProps) => {
           style={{
             position: "relative",
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "column-reverse",
+            // paddingBottom: "25px",
+            justifyContent: "center",
           }}
           onClick={() => dropDownDetail(matchResult.gameId)}
         >
-          MORE
+          {dropdownVisibility ? (
+            <KeyboardDoubleArrowUpIcon />
+          ) : (
+            <KeyboardDoubleArrowDownIcon />
+          )}
         </MoreInfo>
       </MatchWrap>
-      {dropdownVisibility ? (
-        <MatchDetail gameId={matchResult.gameId} />
-      ) : undefined}
+
+      <MatchDetailWrap showMatchResultState={!dropdownVisibility}>
+        {dropdownVisibility && <MatchDetail gameId={matchResult.gameId} />}
+      </MatchDetailWrap>
     </Wrap>
   );
 };

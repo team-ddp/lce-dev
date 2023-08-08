@@ -59,6 +59,8 @@ const UserSection = styled.section`
   height: 250px;
 `;
 const MoreInfo = styled.section`
+  position: sticky;
+  top: 60px;
   display: flex;
   box-sizing: border-box;
   background-color: orange;
