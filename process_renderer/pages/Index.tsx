@@ -6,6 +6,7 @@ import Titlebar from "../components/Titlebar";
 import Sidenav from "../components/Sidenav";
 import Loading from "./Loading";
 import Info from "./Info";
+import Search from "./Search";
 
 const Grid = styled.div`
   width: 100%;
@@ -59,6 +60,7 @@ const index = () => {
             <Routes>
               <Route path="/" element={<Loading />} />
               <Route path="/info" element={clientConnect && <Info />} />
+              <Route path="/search" element={<Search />} />
             </Routes>
           </Page>
         </Grid>

@@ -60,7 +60,7 @@ const UserSection = styled.section`
 `;
 const MoreInfo = styled.section`
   position: sticky;
-  top: 60px;
+  top: 27px;
   display: flex;
   box-sizing: border-box;
   background-color: orange;
@@ -81,10 +81,6 @@ const Text = styled.span`
 `;
 
 const Info = () => {
-  // let userInfo = useRef();
-  // let rankSolo = useRef();
-  // let rankFlex = useRef();
-
   const [userInfo, setUserInfo] = useState<userInfo_type>(interface_userInfo);
   const [rankSolo, setRankSolo] = useState<rank_type>(rank_interface);
   const [rankFlex, setRankFlex] = useState<rank_type>(rank_interface);
@@ -97,7 +93,6 @@ const Info = () => {
     setRankFlex(user.rank.queueMap.RANKED_FLEX_SR);
     console.log("Info_useEffect");
   }, []);
-  const summoner = JSON.parse(JSON.stringify(spellJson));
   console.log(store.getState());
 
   const matchHistory = user.recentMatchList.games.games.map(

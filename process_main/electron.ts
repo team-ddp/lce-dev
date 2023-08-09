@@ -73,33 +73,39 @@ const connectClient = async () => {
   console.log("연결성공!");
   mainWindow.webContents.send(
     "clientConnect",
-    getDataFromLCU.user,
+    // getDataFromLCU.user,
+    await getData("getUser"),
     await getData("getRank"),
     await getData("getMatchList")
   );
 };
 
-const getData = async (method: string, id: string = "0") => {
+const getData = async (method: string, data: string = "0") => {
   return new Promise((resolve, rejects) => {
     switch (method) {
       case "getMatchList":
-        // const data = getDataFromLCU.getMatchList();
         resolve(getDataFromLCU.getMatchList());
-        console.log("1");
+        break;
       case "getRank":
-        // const data = getDataFromLCU.getMatchList();
         resolve(getDataFromLCU.getRank());
-        console.log("12");
+        break;
       case "getUser":
-        // const data = getDataFromLCU.getMatchList();
         resolve(getDataFromLCU.getUser());
-        console.log("123");
+        break;
       case "getState":
-        // const data = getDataFromLCU.getMatchList();
         resolve(getDataFromLCU.getState());
+        break;
       case "getMatchInfo":
-        // const data = getDataFromLCU.getMatchList();
-        resolve(getDataFromLCU.getMatchInfo(id));
+        resolve(getDataFromLCU.getMatchInfo(data));
+        break;
+      case "getUserNameToAccountid":
+        resolve(
+          getDataFromLCU.getUserNameToAccountid(encodeURIComponent(data))
+        );
+        break;
+      case "searchRecentMatchList":
+        resolve(getDataFromLCU.searchMatchList(data));
+        break;
     }
   });
 };
@@ -170,6 +176,18 @@ app.on("ready", async () => {
     fs.writeFile("idToChamp.json", JSON.stringify(data), function () {
       console.log("json파일 생성완료");
     });
+  });
+  ipcMain.handle("getUserAccountid", async (event, data) => {
+    console.log(`1 Received [${data}] from Search renderer browser`);
+    const lcuData: any = await getData("getUserNameToAccountid", data);
+    return lcuData;
+  });
+  ipcMain.handle("searchRecentMatchList", async (event, data) => {
+    console.log(
+      `1 Received [${data}] from searchRecentMatchList renderer browser`
+    );
+    const lcuData: any = await getData("searchRecentMatchList", data);
+    return lcuData;
   });
   createWindow();
   console.log("화면생성");

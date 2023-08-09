@@ -278,6 +278,7 @@ const playerBox = (data: any, num: number) => {
   }
   return matchData;
 };
+
 const summoner = JSON.parse(JSON.stringify(spellJson));
 const champId = JSON.parse(JSON.stringify(idtoChamp));
 const matchType = JSON.parse(JSON.stringify(gameType));

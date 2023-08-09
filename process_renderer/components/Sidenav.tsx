@@ -49,7 +49,7 @@ const Item = styled.span`
   line-height: 70px;
 `;
 const Sidenav = () => {
-  const [clientConnect, setclientConnect] = useState(true);
+  const [clientConnect, setclientConnect] = useState(false);
   const count: any = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
@@ -65,9 +65,9 @@ const Sidenav = () => {
 
   window.api.receive("clientConnect", (e, ...data) => {
     console.log(`Received from main process`);
-    localStorage.setItem("status", "true");
-    localStorage.setItem("user", JSON.stringify(data[0]));
-    localStorage.setItem("rank", JSON.stringify(data[1].queueMap));
+    // localStorage.setItem("status", "true");
+    // localStorage.setItem("user", JSON.stringify(data[0]));
+    // localStorage.setItem("rank", JSON.stringify(data[1].queueMap));
     dispatch(setStatus(true));
     dispatch(setDefaultInfo(data[0]));
     dispatch(setRankInfo(data[1]));
@@ -77,11 +77,6 @@ const Sidenav = () => {
     window.api.removeAllListeners("clientConnect");
     // console.log(data);
   });
-  if (clientConnect) {
-    let data = JSON.parse(localStorage.getItem("status") || "");
-    console.log(data);
-    console.log(Object.keys(data));
-  }
 
   const onClick = async () => {
     console.log("test");
@@ -141,21 +136,21 @@ const Sidenav = () => {
         </Link>
       </Items>
       <Items>
-        <Link to="/">
+        <Link to="/search">
           <Item>
             <PersonSearchOutlinedIcon />
             전적 검색
           </Item>
         </Link>
       </Items>
-      <Items>
+      <>
         <Link to={clientConnect ? "/info" : "/"}>
           <Item>
             <PersonSearchOutlinedIcon />
             사설 검색
           </Item>
         </Link>
-      </Items>
+      </>
       <Items onClick={count.toggle ? onClick : undefined}>
         <Item>
           <PersonSearchOutlinedIcon />

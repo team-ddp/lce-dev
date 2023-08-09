@@ -33,6 +33,8 @@ import {
   LCU_MATCH_TIMELINE,
   LCU_GET_SESSION,
   LCU_GET_RANK,
+  LCU_GET_NAME_TO_ACCOUNTID,
+  LCU_SEARCH_MATCHLIST,
 } from "../../consts/consts";
 
 import { store } from "../../process_renderer/store/store";
@@ -128,8 +130,8 @@ export default class LCU {
     const data = await result.json();
     if ("errorCode" in data) {
       console.log("error");
-      console.log(data);
-      throw new Error("LCU-Request-Rejected");
+      // console.log(data);
+      throw new Error("LCU-Request-Rejected " + endPoint);
     } else {
       return data;
     }
@@ -181,6 +183,7 @@ export default class LCU {
         .catch(reject);
     });
   }
+
   async getMatchInfo(id: string) {
     console.log("getMatchInfo");
     const url = LCU_MATCH_INFO(id);
@@ -191,6 +194,32 @@ export default class LCU {
           // console.log(result);
           resolve(result);
           // this.setWebSocket(this.lolClientCredentials);
+        })
+        .catch(reject);
+    });
+  }
+  async searchMatchList(puuid: string) {
+    console.log("searchMatchList");
+    const url = LCU_SEARCH_MATCHLIST(puuid);
+    console.log(url);
+    return new Promise((resolve, reject) => {
+      this.LCURequest("GET", url)
+        .then((result) => {
+          // console.log(result);
+          resolve(result);
+        })
+        .catch(reject);
+    });
+  }
+  async getUserNameToAccountid(name: string) {
+    console.log("getUserNameToAccountid");
+    const url = LCU_GET_NAME_TO_ACCOUNTID(name);
+    console.log(url);
+    return new Promise((resolve, reject) => {
+      this.LCURequest("GET", url)
+        .then((result) => {
+          // console.log(result);
+          resolve(result);
         })
         .catch(reject);
     });
