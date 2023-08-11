@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
 import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
@@ -50,32 +50,17 @@ const Item = styled.span`
 `;
 const Sidenav = () => {
   const [clientConnect, setclientConnect] = useState(false);
-  const count: any = useSelector((state: RootState) => state.user);
+  const user: any = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const saved: any = localStorage.getItem("status");
-  //   // const s = JSON.parse(localStorage.getItem("user") || "");
-  //   // dispatch(setDefaultInfo(s));
-  //   // console.log("ee");
-  //   if (saved !== null) {
-  //     setclientConnect(saved);
-  //   }
-  // }, [clientConnect]);
+  useEffect(() => {
+    dispatch(setStatus(false));
+  }, []);
 
-  window.api.receive("clientConnect", (e, ...data) => {
-    console.log(`Received from main process`);
-    // localStorage.setItem("status", "true");
-    // localStorage.setItem("user", JSON.stringify(data[0]));
-    // localStorage.setItem("rank", JSON.stringify(data[1].queueMap));
-    dispatch(setStatus(true));
-    dispatch(setDefaultInfo(data[0]));
-    dispatch(setRankInfo(data[1]));
-    dispatch(getRecentMatchList(data[2]));
-
-    setclientConnect(true);
-    window.api.removeAllListeners("clientConnect");
-    // console.log(data);
+  window.api.receive("clientConnect", (e, data) => {
+    dispatch(setStatus(data));
+    setclientConnect(data);
   });
 
   const onClick = async () => {
@@ -123,20 +108,38 @@ const Sidenav = () => {
     console.log(data);
     // console.log("eee");
   });
-  console.log(clientConnect);
 
+  const goToInfo = async () => {
+    try {
+      if (user.toggle) {
+        const data = await window.api.invoke("getInfo");
+        dispatch(setDefaultInfo(data[0]));
+        dispatch(setRankInfo(data[1]));
+        dispatch(getRecentMatchList(data[2]));
+        dispatch(setStatus(data[3]));
+        if (data[3]) {
+          navigate("/info?first");
+        }
+      } else {
+        navigate("/");
+      }
+    } catch {
+      navigate("/");
+    }
+  };
+  console.log("Sidenav 렌더링");
   return (
     <Nav>
-      <Items>
-        <Link to={clientConnect ? "/info" : "/"}>
-          <Item>
-            <PermIdentityOutlinedIcon />
-            My Info
-          </Item>
-        </Link>
+      <Items onClick={goToInfo}>
+        {/* <Link to={user.toggle ? goToInfo : "/"}> */}
+        <Item>
+          <PermIdentityOutlinedIcon />
+          My Info
+        </Item>
+        {/* </Link> */}
       </Items>
       <Items>
-        <Link to="/search">
+        <Link to={user.toggle ? "/search" : "/"}>
           <Item>
             <PersonSearchOutlinedIcon />
             전적 검색
@@ -144,20 +147,20 @@ const Sidenav = () => {
         </Link>
       </Items>
       <>
-        <Link to={clientConnect ? "/info" : "/"}>
+        <Link to={user.toggle ? "/info" : "/"}>
           <Item>
             <PersonSearchOutlinedIcon />
             사설 검색
           </Item>
         </Link>
       </>
-      <Items onClick={count.toggle ? onClick : undefined}>
+      <Items onClick={user.toggle ? onClick : undefined}>
         <Item>
           <PersonSearchOutlinedIcon />
           20게임 매치리스트
         </Item>
       </Items>
-      <Items onClick={count.toggle ? test : undefined}>
+      <Items onClick={user.toggle ? test : undefined}>
         <Item>
           <PersonSearchOutlinedIcon />
           개별 게임데이터불러오기

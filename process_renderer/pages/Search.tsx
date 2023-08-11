@@ -1,6 +1,14 @@
 import React, { ChangeEvent, useState, KeyboardEvent } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getRecentMatchList,
+  setDefaultInfo,
+  setRankInfo,
+  setStatus,
+  getMatchInfo,
+} from "../store/user";
 
 const Container = styled.div`
   box-sizing: border-box;
@@ -43,28 +51,32 @@ const Input = styled.input`
 
 const Search = () => {
   const [nickName, setNickName] = useState<string>("");
+  const [puuid, setPuuid] = useState<number>(0);
   const [searchResult, setSearchResult] = useState<string>("");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const onSubmitSearch = (event: KeyboardEvent<HTMLInputElement>) => {
+  const onSubmitSearch = async (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && nickName !== "") {
       setNickName("");
       setSearchResult("검색중....");
-      window.api
-        .invoke("getUserAccountid", nickName)
-        .then((data) => {
-          console.log(data.puuid);
-          window.api
-            .invoke("searchRecentMatchList", data.puuid)
-            .then((data) => {
-              console.log(data);
-              navigate(`/info`);
-            });
-        })
-        .catch((error) => {
-          console.log(error);
-          console.log("닉네임 찾지못함");
-          setSearchResult("해당 소환사가 존재하지 않습니다!");
-        });
+
+      try {
+        const puuidData = await window.api.invoke("getUserAccountid", nickName);
+        dispatch(setDefaultInfo(puuidData));
+        try {
+          const matchList = await window.api.invoke(
+            "searchRecentMatchList",
+            puuidData.puuid
+          );
+          dispatch(getRecentMatchList(matchList[0]));
+          dispatch(setRankInfo(matchList[1]));
+          navigate(`/info`);
+        } catch (error) {
+          setSearchResult("해당 소환사의 매치기록을 찾지 못했습니다.");
+        }
+      } catch (error) {
+        setSearchResult("해당 소환사가 존재하지 않습니다!");
+      }
       console.log("Search Page press Enter");
       console.log(nickName);
     }

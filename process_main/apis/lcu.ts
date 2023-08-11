@@ -35,6 +35,7 @@ import {
   LCU_GET_RANK,
   LCU_GET_NAME_TO_ACCOUNTID,
   LCU_SEARCH_MATCHLIST,
+  LCU_GET_RANK_USE_PUUID,
 } from "../../consts/consts";
 
 import { store } from "../../process_renderer/store/store";
@@ -71,7 +72,7 @@ export default class LCU {
         this.state = false;
         console.log("not sign");
         connectClient();
-        // this.lolClientConnection.stop();
+        this.lolClientConnection.stop();
       });
       this.user = await this.firstConnect();
       this.lolClientConnection.start();
@@ -116,24 +117,28 @@ export default class LCU {
   async LCURequest(httpMethod: any, endPoint: any) {
     console.log("http1 요청");
     console.log(endPoint);
-    const creedntils = await authenticate();
-    console.log("요청2");
-    const result = await createHttp1Request(
-      {
-        method: httpMethod,
-        url: endPoint,
-      },
-      creedntils
-    );
-    console.log("session close");
+    try {
+      const creedntils = await authenticate();
+      console.log("요청2");
+      const result = await createHttp1Request(
+        {
+          method: httpMethod,
+          url: endPoint,
+        },
+        creedntils
+      );
+      console.log("session close");
 
-    const data = await result.json();
-    if ("errorCode" in data) {
-      console.log("error");
-      // console.log(data);
-      throw new Error("LCU-Request-Rejected " + endPoint);
-    } else {
-      return data;
+      const data = await result.json();
+      if ("errorCode" in data) {
+        console.log("error");
+        // console.log(data);
+        throw new Error("LCU-Request-Rejected " + endPoint);
+      } else {
+        return data;
+      }
+    } catch {
+      console.log("리퀘스트 오류");
     }
   }
 
@@ -214,6 +219,19 @@ export default class LCU {
   async getUserNameToAccountid(name: string) {
     console.log("getUserNameToAccountid");
     const url = LCU_GET_NAME_TO_ACCOUNTID(name);
+    console.log(url);
+    return new Promise((resolve, reject) => {
+      this.LCURequest("GET", url)
+        .then((result) => {
+          // console.log(result);
+          resolve(result);
+        })
+        .catch(reject);
+    });
+  }
+  async getRankUsePuuid(name: string) {
+    console.log("getRankUsePuuid");
+    const url = LCU_GET_RANK_USE_PUUID(name);
     console.log(url);
     return new Promise((resolve, reject) => {
       this.LCURequest("GET", url)

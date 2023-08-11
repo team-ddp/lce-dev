@@ -65,49 +65,49 @@ const createWindow = () => {
 };
 
 const connectClient = async () => {
-  console.log("연결중..");
+  console.log("LCU 연결중..");
+  mainWindow.webContents.send("clientConnect", false);
   const credentails: Credentials = await authenticate({
     awaitConnection: true,
   });
   getDataFromLCU = await new LcuApi(credentails, connectClient);
-  console.log("연결성공!");
-  mainWindow.webContents.send(
-    "clientConnect",
-    // getDataFromLCU.user,
-    await getData("getUser"),
-    await getData("getRank"),
-    await getData("getMatchList")
-  );
+  mainWindow.webContents.send("clientConnect", true);
+  console.log("LCU 연결성공!");
 };
 
 const getData = async (method: string, data: string = "0") => {
-  return new Promise((resolve, rejects) => {
-    switch (method) {
-      case "getMatchList":
-        resolve(getDataFromLCU.getMatchList());
-        break;
-      case "getRank":
-        resolve(getDataFromLCU.getRank());
-        break;
-      case "getUser":
-        resolve(getDataFromLCU.getUser());
-        break;
-      case "getState":
-        resolve(getDataFromLCU.getState());
-        break;
-      case "getMatchInfo":
-        resolve(getDataFromLCU.getMatchInfo(data));
-        break;
-      case "getUserNameToAccountid":
-        resolve(
-          getDataFromLCU.getUserNameToAccountid(encodeURIComponent(data))
-        );
-        break;
-      case "searchRecentMatchList":
-        resolve(getDataFromLCU.searchMatchList(data));
-        break;
-    }
-  });
+  if (getDataFromLCU) {
+    return new Promise((resolve, rejects) => {
+      switch (method) {
+        case "getMatchList":
+          resolve(getDataFromLCU.getMatchList());
+          break;
+        case "getRank":
+          resolve(getDataFromLCU.getRank());
+          break;
+        case "getUser":
+          resolve(getDataFromLCU.getUser());
+          break;
+        case "getState":
+          resolve(getDataFromLCU.getState());
+          break;
+        case "getMatchInfo":
+          resolve(getDataFromLCU.getMatchInfo(data));
+          break;
+        case "getUserNameToAccountid":
+          resolve(
+            getDataFromLCU.getUserNameToAccountid(encodeURIComponent(data))
+          );
+          break;
+        case "searchRecentMatchList":
+          resolve(getDataFromLCU.searchMatchList(data));
+          break;
+        case "getRankUsePuuid":
+          resolve(getDataFromLCU.getRankUsePuuid(data));
+          break;
+      }
+    });
+  }
 };
 
 // const test = async (): Promise<userInfo_type> => {
@@ -182,16 +182,49 @@ app.on("ready", async () => {
     const lcuData: any = await getData("getUserNameToAccountid", data);
     return lcuData;
   });
+  // ipcMain.handle("searchRecentMatchList", async (event, data) => {
+  //   console.log(
+  //     `1 Received [${data}] from searchRecentMatchList renderer browser`
+  //   );
+  //   const lcuData: any = await getData("searchRecentMatchList", data);
+  //   return lcuData;
+  // });
+  // ipcMain.handle("getInfoDatas", async () => {
+  //   mainWindow.webContents.send(
+  //     "clientConnect",
+  //     // getDataFromLCU.user,
+  //     await getData("getUser"),
+  //     await getData("getRank"),
+  //     await getData("getMatchList")
+  //   );
+  // });
   ipcMain.handle("searchRecentMatchList", async (event, data) => {
     console.log(
       `1 Received [${data}] from searchRecentMatchList renderer browser`
     );
-    const lcuData: any = await getData("searchRecentMatchList", data);
+    let lcuData: any = [];
+    lcuData.push(await getData("searchRecentMatchList", data));
+    lcuData.push(await getData("getRankUsePuuid", data));
     return lcuData;
   });
+  ipcMain.handle("getInfo", async (event, data) => {
+    console.log(`1 Received [${data}] from sideNav page renderer browser`);
+    let lcuData: any = [];
+    lcuData.push(await getData("getUser"));
+    lcuData.push(await getData("getRank"));
+    lcuData.push(await getData("getMatchList"));
+    // 클라가 안켜져있을때 sidenav렌더막기
+    if (!getDataFromLCU) {
+      lcuData.push(false);
+    } else {
+      lcuData.push(true);
+    }
+
+    return lcuData;
+  });
+
   createWindow();
   console.log("화면생성");
-
   // console.log("id값" + JSON.stringify(credentails));
   connectClient();
 });

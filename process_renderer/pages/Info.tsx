@@ -86,26 +86,40 @@ const Info = () => {
   const [rankFlex, setRankFlex] = useState<rank_type>(rank_interface);
   const dispatch = useDispatch();
   const user: any = useSelector((state: RootState) => state.user);
-
   useEffect(() => {
     setUserInfo(user.userInfo);
     setRankSolo(user.rank.queueMap.RANKED_SOLO_5x5);
     setRankFlex(user.rank.queueMap.RANKED_FLEX_SR);
     console.log("Info_useEffect");
-  }, []);
-  console.log(store.getState());
-
-  const matchHistory = user.recentMatchList.games.games.map(
-    (matchResult: any, num: number) => {
-      if (matchResult.queueId !== 1700) {
-        return (
-          <div key={matchResult.gameId}>
-            <Match matchResult={matchResult} num={num} />
+  }, [user.userInfo, user.rankSolo, user.rankFlex]);
+  console.log("infoPage 렌더 ");
+  const matchHistory = (data: any) => {
+    const matchData = [];
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].queueId !== 1700) {
+        matchData.push(
+          <div key={data[i].gameId}>
+            <Match matchResult={data[i]} />
           </div>
         );
       }
     }
-  );
+    return matchData;
+  };
+
+  // const matchHistory = user.recentMatchList.games.games.map(
+  //   (matchResult: any, num: number) => {
+  //     if (matchResult.queueId !== 1700) {
+  //       return (
+  //         <div key={matchResult.gameId}>
+  //           <Match matchResult={matchResult} num={num} />
+  //         </div>
+  //       );
+  //     }
+  //   }
+  // );
+
+  console.log(store.getState());
 
   return (
     <Container>
@@ -217,7 +231,9 @@ const Info = () => {
             }}
           >
             <MoreInfo></MoreInfo>
-            <MathList>{matchHistory}</MathList>
+            <MathList>
+              {matchHistory(user.recentMatchList.games.games)}
+            </MathList>
           </div>
         </Wrap>
       </Page>

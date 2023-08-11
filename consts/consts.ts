@@ -24,6 +24,10 @@ export const LCU_GET_SESSION = "/lol-login/v1/session";
 // 현재 랭크 조회
 export const LCU_GET_RANK = "/lol-ranked/v1/current-ranked-stats";
 
+// puuid 랭크 조회
+export const LCU_GET_RANK_USE_PUUID = (puuid: string) =>
+  `/lol-ranked/v1/ranked-stats/${puuid}`;
+
 // 닉네임으로 AccountId 조회
 export const LCU_GET_NAME_TO_ACCOUNTID = (name: string) =>
   `/lol-summoner/v1/summoners?name=${name}`;

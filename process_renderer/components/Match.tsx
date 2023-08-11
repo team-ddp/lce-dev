@@ -200,9 +200,9 @@ const slideUp = keyframes`
 
 const itemBox = (data: any) => {
   const matchData = [];
+  let index = 1;
   for (let i = 0; i < 7; i++) {
     let isHover = true;
-
     if (data.participants[0].stats[`item${i}`] === 0) {
       isHover = false;
     }
@@ -212,7 +212,7 @@ const itemBox = (data: any) => {
             style={{
               position: "relative",
             }}
-            key={data.participants[0].stats[`item${i}`]}
+            key={index}
           >
             <ToolTip
               itemCode={data.participants[0].stats[`item${i}`]}
@@ -236,11 +236,12 @@ const itemBox = (data: any) => {
             style={{
               position: "relative",
             }}
-            key={data.participants[0].stats[`item${i}`]}
+            key={index}
           >
             <Box size="medium"></Box>
           </div>
         );
+    index += 1;
   }
   return matchData;
 };
