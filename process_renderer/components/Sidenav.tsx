@@ -56,12 +56,28 @@ const Sidenav = () => {
 
   useEffect(() => {
     dispatch(setStatus(false));
-  }, []);
+    window.api.receive("clientConnect", (e, data) => {
+      dispatch(setStatus(data));
+      setclientConnect(data);
+    });
+    window.api.receive("giveMatchInfo", (e, data) => {
+      console.log(`Received MatchInfo from main process`);
+      dispatch(getMatchInfo(data));
+    });
+    window.api.receive("test", (e, ...data) => {
+      console.log(`Received from main process`);
+      // window.api.removeAllListeners("test");
+      // localStorage.setItem("data", JSON.stringify(data[0]));
 
-  window.api.receive("clientConnect", (e, data) => {
-    dispatch(setStatus(data));
-    setclientConnect(data);
-  });
+      console.log(data);
+      // console.log("eee");
+    });
+    return () => {
+      window.api.removeAllListeners("clientConnect");
+      window.api.removeAllListeners("test");
+      window.api.removeAllListeners("giveMatchInfo");
+    };
+  }, []);
 
   const onClick = async () => {
     console.log("test");
@@ -95,19 +111,6 @@ const Sidenav = () => {
     const data = "6529986300";
     window.api.invoke("getMatchInfo", data);
   };
-
-  window.api.receive("giveMatchInfo", (e, data) => {
-    console.log(`Received MatchInfo from main process`);
-    dispatch(getMatchInfo(data));
-  });
-  window.api.receive("test", (e, ...data) => {
-    console.log(`Received from main process`);
-    // window.api.removeAllListeners("test");
-    // localStorage.setItem("data", JSON.stringify(data[0]));
-
-    console.log(data);
-    // console.log("eee");
-  });
 
   const goToInfo = async () => {
     try {
